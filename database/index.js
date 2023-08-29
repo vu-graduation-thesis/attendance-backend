@@ -1,12 +1,10 @@
 import mongoose from "mongoose";
-const dbURL = "mongodb://localhost:27017/your-database-name";
-
+import config from "../config.js";
+console.log(config.mongoUrl)
 mongoose
-  .connect(dbURL, {
+  .connect(config.mongoUrl, {
     useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
+    useUnifiedTopology: true
   })
   .then(() => {
     console.log("Connected to MongoDB");

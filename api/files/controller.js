@@ -4,13 +4,12 @@ const batchUpload = async (req, res) => {
       message: "No files were uploaded.",
     });
   }
-
   const images = req.files.map((file) => file.location);
 
   res.json({
     message: "Uploaded successfully.",
     data: {
-      images,
+      successCount: images?.length,
     },
   });
 };

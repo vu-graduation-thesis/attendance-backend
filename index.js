@@ -1,11 +1,10 @@
+import "dotenv/config.js"
 import express from "express";
-const app = express();
 import cors from "cors";
-import aws from "aws-sdk";
 import config from "./config.js";
 import apiRouter from "./api/index.js";
 import db from "./database/index.js";
-import messageQueue from "./queue/index.js";
+const app = express();
 
 if (db.readyState === 1) {
   console.log("MongoDB is connected");
@@ -16,12 +15,6 @@ if (db.readyState === 1) {
 app.use(cors());
 
 app.use("/api", apiRouter);
-
-aws.config.update({
-  accessKeyId: "YOUR_AWS_ACCESS_KEY",
-  secretAccessKey: "YOUR_AWS_SECRET_ACCESS_KEY",
-  region: "YOUR_AWS_REGION",
-});
 
 app.listen(config.port, () => {
   console.log(`Server is running on port ${config.port}`);
