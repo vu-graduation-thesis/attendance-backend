@@ -1,5 +1,6 @@
 import multer from "multer";
 import multerS3 from "multer-s3";
+
 import aws from "../aws/index.js";
 
 const s3 = new aws.S3();
@@ -10,7 +11,7 @@ export const upload = multer({
     bucket: "face-recognition-service",
     contentType: multerS3.AUTO_CONTENT_TYPE,
     key: (req, file, cb) => {
-      cb(null, `test/${Date.now()}-${file.originalname}`);
+      cb(null, `30000/${Date.now()}-${file.originalname}`);
     },
   }),
 });
