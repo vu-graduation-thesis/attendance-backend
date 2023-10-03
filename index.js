@@ -1,16 +1,11 @@
-import "dotenv/config.js"
-import express from "express";
 import cors from "cors";
-import config from "./config.js";
-import apiRouter from "./api/index.js";
-import db from "./database/index.js";
-const app = express();
+import "dotenv/config.js";
+import express from "express";
 
-if (db.readyState === 1) {
-  console.log("MongoDB is connected");
-} else {
-  console.error("MongoDB is not connected");
-}
+import apiRouter from "./api/index.js";
+import config from "./config.js";
+
+const app = express();
 
 app.use(cors());
 
