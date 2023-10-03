@@ -2,9 +2,16 @@ import mongoose from "mongoose";
 
 const accountSchema = new mongoose.Schema(
   {
-    username: String,
+    username: {
+      type: String,
+      unique: true,
+      index: true,
+    },
     password: String,
-    email: String,
+    email: {
+      type: String,
+      index: true,
+    },
     role: String,
     type: String,
     admin: {
@@ -22,9 +29,9 @@ const accountSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
-const AcountModel = mongoose.model("accounts", accountSchema);
+const AccountModel = mongoose.model("accounts", accountSchema);
 
-export default AcountModel;
+export default AccountModel;

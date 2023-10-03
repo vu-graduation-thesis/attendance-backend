@@ -4,12 +4,13 @@ const config = {
   redis: {
     host: process.env.REDIS_HOST,
     port: process.env.REDIS_PORT,
-    password: process.env.REDIS_PASSWORD
+    password: process.env.REDIS_PASSWORD,
   },
   aws: {
     accessKey: process.env.AWS_ACCESS_KEY,
-    secretKey: process.env.SECRET_KEY
-  }
+    secretKey: process.env.AWS_SECRET_KEY,
+  },
+  jwtSecret: process.env.JWT_SECRET_KEY,
 };
 
 export default config;
