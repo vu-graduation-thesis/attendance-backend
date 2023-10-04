@@ -4,9 +4,14 @@ import AccountRepository from "../../repositories/account.js";
 import { TEACHER_ROLE } from "../../utils/constant.js";
 import logger from "../../utils/logger.js";
 import AccountModel from "../../database/account.js";
+import crypt from "../../utils/crypt.js";
 
 const getAllTeachers = async () => {
-  const teachers = await AccountRepository.find({ role: TEACHER_ROLE });
+  let teachers = await AccountRepository.find({ role: TEACHER_ROLE });
+  teachers = teachers.map((teacher) => {
+    delete teacher.password;
+    return teacher;
+  });
   logger.info(
     `Get all teachers successfully - ${
       teachers.length
@@ -16,6 +21,12 @@ const getAllTeachers = async () => {
 };
 
 const addTeacher = async (teacher, createdBy) => {
+  const existedTeacher = await AccountModel.findOne({
+    username: teacher.username,
+  });
+  if (existedTeacher) {
+    throw new CustomException(400, "Username existed", EXISTED_ERROR_CODE);
+  }
   const newTeacher = await TeacherModel.create({
     ...teacher,
     createdBy: new mongoose.Types.ObjectId(createdBy),
@@ -25,7 +36,9 @@ const addTeacher = async (teacher, createdBy) => {
     ...teacher,
     role: TEACHER_ROLE,
     teacher: newTeacher._id,
+    password: crypt.bcryptHash(teacher.password),
   });
+  delete newAccount.password;
   logger.info(`Add teacher successfully - ${JSON.stringify(newTeacher)}`);
   return newAccount;
 };
@@ -34,6 +47,7 @@ const updateTeacher = async (id, teacher) => {
   const updatedTeacher = await TeacherModel.findByIdAndUpdate(id, teacher, {
     new: true,
   });
+  delete updatedTeacher.password;
   logger.info(
     `Update teacher successfully - ${JSON.stringify(updatedTeacher)}`
   );
