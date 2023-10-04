@@ -12,7 +12,12 @@ const redisClient = redis.createClient({
 });
 
 (async () => {
-  await redisClient.connect().catch(console.error);
+  await redisClient
+    .connect()
+    .then(() => {
+      console.log("Redis connected");
+    })
+    .catch(console.error);
 
   const subscriber = redisClient.duplicate();
 
@@ -31,5 +36,4 @@ const messageQueue = new Queue("message", {
   },
 });
 
-export { redisClient };
-export default messageQueue;
+export default { redisClient, messageQueue };

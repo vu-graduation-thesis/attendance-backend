@@ -12,24 +12,24 @@ const lessonSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "classrooms",
     },
-    students: [
+    attendances: [
       {
         student: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "students",
         },
-        attendanceType: {
+        type: {
           type: String,
-          enum: ["AI-DETECTED", "MANUAL"],
+          enum: ["AI_DETECTED", "MANUAL"],
         },
       },
     ],
   },
   {
     timestamps: true,
-  },
+  }
 );
 
-const User = mongoose.model("lessons", lessonSchema);
+const LessonModel = mongoose.model("lessons", lessonSchema);
 
-export default User;
+export default LessonModel;
