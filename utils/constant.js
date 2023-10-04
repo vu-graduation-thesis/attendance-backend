@@ -8,3 +8,5 @@ export const ONE_WEEK = ONE_DAY * 7;
 export const ADMIN_ROLE = "ADMIN";
 export const STUDENT_ROLE = "STUDENT";
 export const TEACHER_ROLE = "TEACHER";
+
+export const EXISTED_ERROR_CODE = "EXISTED_ERROR_CODE";
