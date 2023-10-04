@@ -1,9 +1,11 @@
-export const asyncRouteHandler = fn => {
+import logger from "../utils/logger.js";
+
+export const asyncRouteHandler = (fn) => {
   return async (req, res, next) => {
     try {
       await fn(req, res, next);
     } catch (error) {
-      console.log("handle", error);
+      logger.error(`Api exception handler: ${error.message}`);
       next(error);
     }
   };

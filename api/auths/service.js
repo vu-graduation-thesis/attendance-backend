@@ -9,16 +9,20 @@ import {
   LOGIN_WITH_USERNAME_PASSWORD,
   ONE_WEEK,
 } from "../../utils/constant.js";
+import logger from "../../utils/logger.js";
 
 const loginWithUsernamePassword = async (username, password) => {
   const account = await AccountRepository.findOne(username);
   if (!account) {
+    logger.error(`Account with username ${username} not found`);
     throw new CustomException(400, "Account not found");
   }
   if (!cryptUtil.bcryptCompare(password, account.password)) {
+    logger.error(`Wrong password for account with username ${username}`);
     throw new CustomException(403, "Wrong password");
   }
 
+  logger.info(`Account with username ${username} logged in`);
   const token = jwtUtil.generateToken(
     {
       username: account.username,
@@ -39,10 +43,20 @@ const loginWithUsernamePassword = async (username, password) => {
 
 const loginWithGoogle = async (ggToken) => {
   const result = await GoogleService.loginWithGoogle(ggToken);
-  const account = await AccountRepository.findOne(result.email);
+  const account =
+    result &&
+    (await AccountRepository.findOne({
+      email: result?.email,
+    }));
   if (!account) {
+    logger.error(
+      `Account login with Google by email ${result?.email || ggToken} not found`
+    );
     throw new CustomException(400, "Account not found");
   }
+  logger.info(
+    `Account with Google by email ${result?.email} ${account.username} logged in`
+  );
   const token = jwtUtil.generateToken(
     { username: account.username, role: account.role, type: LOGIN_WITH_GOOGLE },
     {

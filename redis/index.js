@@ -2,6 +2,7 @@ import Queue from "bull";
 import redis from "redis";
 
 import config from "../config.js";
+import logger from "../utils/logger.js";
 
 const redisClient = redis.createClient({
   password: config.redis.password,
@@ -15,16 +16,18 @@ const redisClient = redis.createClient({
   await redisClient
     .connect()
     .then(() => {
-      console.log("Redis connected");
+      logger.info("Redis connected");
     })
-    .catch(console.error);
+    .catch((error) => {
+      logger.error("Error connecting to Redis:", error);
+    });
 
   const subscriber = redisClient.duplicate();
 
   await subscriber.connect();
 
-  await subscriber.subscribe("training_data", message => {
-    console.log(message);
+  await subscriber.subscribe("training_data", (message) => {
+    logger.info(`Received message in training_data queue: ${message}`);
   });
 })();
 
