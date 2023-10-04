@@ -7,6 +7,7 @@ import config from "./config.js";
 import "./database/index.js";
 import exceptionHandler from "./middlewares/exceptionHandler.js";
 import "./redis/index.js";
+import logger from "./utils/logger.js";
 
 const app = express();
 
@@ -18,5 +19,5 @@ app.use("/api", apiRouter);
 app.use(exceptionHandler);
 
 app.listen(config.port, () => {
-  console.log(`Server is running on port ${config.port}`);
+  logger.info(`Server is running on port ${config.port}`);
 });
