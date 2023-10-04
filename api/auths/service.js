@@ -3,13 +3,12 @@ import GoogleService from "../../externalServices/google.js";
 import AccountRepository from "../../repositories/account.js";
 import jwtUtil from "../../utils/jwt.js";
 import cryptUtil from "../../utils/crypt.js";
-import redisUtil from "../../utils/redis.js";
 import {
   LOGIN_WITH_GOOGLE,
   LOGIN_WITH_USERNAME_PASSWORD,
-  ONE_WEEK,
 } from "../../utils/constant.js";
 import logger from "../../utils/logger.js";
+import AccountModel from "../../database/account.js";
 
 const loginWithUsernamePassword = async (username, password) => {
   const account = await AccountRepository.findOne(username);
@@ -25,6 +24,7 @@ const loginWithUsernamePassword = async (username, password) => {
   logger.info(`Account with username ${username} logged in`);
   const token = jwtUtil.generateToken(
     {
+      id: account._id,
       username: account.username,
       role: account.role,
       type: LOGIN_WITH_USERNAME_PASSWORD,
@@ -33,11 +33,6 @@ const loginWithUsernamePassword = async (username, password) => {
       expiresIn: "7d",
     }
   );
-
-  redisUtil.set(`AUTH_${account.username}`, token, {
-    EX: ONE_WEEK,
-  });
-
   return { token };
 };
 
@@ -58,7 +53,12 @@ const loginWithGoogle = async (ggToken) => {
     `Account with Google by email ${result?.email} ${account.username} logged in`
   );
   const token = jwtUtil.generateToken(
-    { username: account.username, role: account.role, type: LOGIN_WITH_GOOGLE },
+    {
+      id: account._id,
+      username: account.username,
+      role: account.role,
+      type: LOGIN_WITH_GOOGLE,
+    },
     {
       expiresIn: "7d",
     }
@@ -66,4 +66,20 @@ const loginWithGoogle = async (ggToken) => {
   return { token };
 };
 
-export default { loginWithUsernamePassword, loginWithGoogle };
+const changePassword = async (id, { oldPassword, newPassword }) => {
+  const account = await AccountModel.findById(id);
+  if (!account) {
+    logger.error(`Account with id ${id} not found`);
+    throw new CustomException(400, "Account not found");
+  }
+  if (!cryptUtil.bcryptCompare(oldPassword, account.password)) {
+    logger.error(`Wrong old password for account with id ${id}`);
+    throw new CustomException(403, "Wrong old password");
+  }
+  account.password = cryptUtil.bcryptHash(newPassword);
+  await account.save();
+  logger.info(`Account with id ${id} changed password`);
+  return { message: "Change password successfully" };
+};
+
+export default { loginWithUsernamePassword, loginWithGoogle, changePassword };

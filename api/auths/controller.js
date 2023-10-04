@@ -27,4 +27,22 @@ const verifyToken = async (req, res) => {
   });
 };
 
-export default { loginWithUsernamePassword, loginWithGoogle, verifyToken };
+const changePassword = async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  const result = await service.changePassword(req.user.id, {
+    oldPassword,
+    newPassword,
+  });
+
+  res.json({
+    message: "Change password successfully.",
+    data: result,
+  });
+};
+
+export default {
+  loginWithUsernamePassword,
+  loginWithGoogle,
+  verifyToken,
+  changePassword,
+};
