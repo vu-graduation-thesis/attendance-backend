@@ -7,4 +7,11 @@ const findOne = (username) => {
     .populate("teacher");
 };
 
-export default { findOne };
+const find = (filter) => {
+  return AccountModel.find(filter)
+    .populate("admin")
+    .populate("student")
+    .populate("teacher");
+};
+
+export default { findOne, find };

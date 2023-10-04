@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { ADMIN_ROLE, STUDENT_ROLE, TEACHER_ROLE } from "../utils/constant.js";
 
 const accountSchema = new mongoose.Schema(
   {
@@ -12,8 +13,10 @@ const accountSchema = new mongoose.Schema(
       type: String,
       index: true,
     },
-    role: String,
-    type: String,
+    role: {
+      type: String,
+      enum: [ADMIN_ROLE, STUDENT_ROLE, TEACHER_ROLE],
+    },
     admin: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "admins",

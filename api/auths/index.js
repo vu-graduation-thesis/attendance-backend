@@ -16,5 +16,10 @@ router.get(
   authMiddleware(),
   asyncRouteHandler(controller.verifyToken)
 );
+router.put(
+  "/change-password",
+  authMiddleware(),
+  asyncRouteHandler(controller.changePassword)
+);
 
 export default router;
