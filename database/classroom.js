@@ -4,7 +4,7 @@ const classroomSchema = new mongoose.Schema(
   {
     name: String,
     location: String,
-    numberOfSeats: String,
+    numberOfSeats: Number,
     type: String,
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
@@ -13,7 +13,7 @@ const classroomSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 const ClassroomModel = mongoose.model("classrooms", classroomSchema);
