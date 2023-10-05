@@ -8,6 +8,7 @@ import classroomRouter from "./classrooms/index.js";
 import subjectRouter from "./subjects/index.js";
 import studentRouter from "./students/index.js";
 import adminRouter from "./admins/index.js";
+import classRouter from "./classes/index.js";
 
 const router = Router();
 
@@ -19,5 +20,6 @@ router.use("/classrooms", classroomRouter);
 router.use("/subjects", subjectRouter);
 router.use("/students", studentRouter);
 router.use("/admins", adminRouter);
+router.use("/classes", classRouter);
 
 export default router;

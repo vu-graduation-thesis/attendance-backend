@@ -8,7 +8,7 @@ const classroomSchema = new mongoose.Schema(
     type: String,
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "admins",
+      ref: "accounts",
     },
   },
   {

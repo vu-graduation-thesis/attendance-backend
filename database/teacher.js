@@ -6,12 +6,12 @@ const teacherSchema = new mongoose.Schema(
     phoneNumber: String,
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "admins",
+      ref: "accounts",
     },
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 const TeacherModel = mongoose.model("teachers", teacherSchema);

@@ -17,12 +17,18 @@ const classSchema = new mongoose.Schema(
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "admins",
+      ref: "accounts",
     },
+    students: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "students",
+      },
+    ],
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 const ClassModel = mongoose.model("classes", classSchema);

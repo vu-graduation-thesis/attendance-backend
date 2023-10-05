@@ -6,12 +6,12 @@ const subjectSchema = new mongoose.Schema(
     type: String,
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "admins",
+      ref: "accounts",
     },
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 const SubjectModel = mongoose.model("subjects", subjectSchema);

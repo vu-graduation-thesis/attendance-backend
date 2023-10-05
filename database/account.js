@@ -8,7 +8,10 @@ const accountSchema = new mongoose.Schema(
       unique: true,
       index: true,
     },
-    password: String,
+    password: {
+      type: String,
+      select: false,
+    },
     email: {
       type: String,
       index: true,
@@ -19,7 +22,7 @@ const accountSchema = new mongoose.Schema(
     },
     admin: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "admins",
+      ref: "accounts",
     },
     student: {
       type: mongoose.Schema.Types.ObjectId,

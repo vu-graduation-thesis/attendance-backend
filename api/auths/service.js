@@ -11,7 +11,9 @@ import logger from "../../utils/logger.js";
 import AccountModel from "../../database/account.js";
 
 const loginWithUsernamePassword = async (username, password) => {
-  const account = await AccountRepository.findOne(username);
+  const account = await AccountModel.findOne({
+    username,
+  }).select("+password");
   if (!account) {
     logger.error(`Account with username ${username} not found`);
     throw new CustomException(400, "Account not found");
@@ -24,7 +26,7 @@ const loginWithUsernamePassword = async (username, password) => {
   logger.info(`Account with username ${username} logged in`);
   const token = jwtUtil.generateToken(
     {
-      id: account._id,
+      _id: account._id,
       username: account.username,
       role: account.role,
       type: LOGIN_WITH_USERNAME_PASSWORD,
@@ -54,7 +56,7 @@ const loginWithGoogle = async (ggToken) => {
   );
   const token = jwtUtil.generateToken(
     {
-      id: account._id,
+      _id: account._id,
       username: account.username,
       role: account.role,
       type: LOGIN_WITH_GOOGLE,

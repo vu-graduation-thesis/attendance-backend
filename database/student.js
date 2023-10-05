@@ -15,7 +15,7 @@ const studentSchema = new mongoose.Schema(
     address: String,
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "admins",
+      ref: "accounts",
     },
   },
   {
