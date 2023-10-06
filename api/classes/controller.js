@@ -8,6 +8,14 @@ const getAllClasses = async (req, res) => {
   });
 };
 
+const getClassById = async (req, res) => {
+  const _class = await service.getClassById(req.params.id);
+  res.json({
+    message: "Get class by id successfully",
+    data: _class,
+  });
+};
+
 const addClass = async (req, res) => {
   const _class = await service.addClass(req.body, req.user._id);
   res.json({
@@ -24,4 +32,4 @@ const updateClass = async (req, res) => {
   });
 };
 
-export default { getAllClasses, addClass, updateClass };
+export default { getAllClasses, addClass, updateClass, getClassById };

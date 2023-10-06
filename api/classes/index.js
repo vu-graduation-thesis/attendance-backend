@@ -12,6 +12,12 @@ router.get(
   asyncRouteHandler(controller.getAllClasses)
 );
 
+router.get(
+  "/:id",
+  authMiddleware(ADMIN_ROLE, TEACHER_ROLE),
+  asyncRouteHandler(controller.getClassById)
+);
+
 router.post(
   "/",
   authMiddleware(ADMIN_ROLE, TEACHER_ROLE),
