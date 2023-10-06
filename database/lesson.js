@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 const lessonSchema = new mongoose.Schema(
   {
     lessonDay: Date,
-    lessonTime: String,
     class: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "classes",

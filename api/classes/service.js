@@ -1,8 +1,8 @@
-import mongoose, { Mongoose } from "mongoose";
+import mongoose from "mongoose";
 import ClassModel from "../../database/class.js";
 import LessonModel from "../../database/lesson.js";
 import logger from "../../utils/logger.js";
-import { DateTime } from "luxon";
+import LessonRepository from "../../repositories/lesson.js";
 
 const getAllClasses = async () => {
   const classes = await ClassModel.find({})
@@ -44,29 +44,13 @@ const addClass = async (_class, createdBy) => {
     subject: new mongoose.Types.ObjectId(_class.subject),
   });
 
-  if (newClass?.totalNumberOfLessons && _class?.lessonSchedules) {
-    const lessons = [];
-    let schedulePointer = 0;
-    while (lessons.length < newClass.totalNumberOfLessons) {
-      const schedule = _class?.lessonSchedules?.[schedulePointer];
-      const date = DateTime.fromFormat(schedule.startDay, "dd/MM/yyyy")
-        .setZone("Asia/Ho_Chi_Minh")
-        .plus({ days: lessons.length * 7 });
-      lessons.push({
-        classroom: new mongoose.Types.ObjectId(schedule?.classroom),
-        session: schedule.session,
-        class: new mongoose.Types.ObjectId(newClass._id),
-        lessons: schedule.lessons,
-        lessonDay: date.toISO(),
-      });
-      schedulePointer++;
-      if (schedulePointer >= _class?.lessonSchedules?.length) {
-        schedulePointer = 0;
-      }
-    }
-    await LessonModel.insertMany(lessons);
-  }
+  await LessonRepository.initLessonSchedule(
+    newClass._id,
+    _class.lessonSchedules,
+    _class.totalNumberOfLessons
+  );
 
+  logger.info(`Add class successfully - ${JSON.stringify(newClass)}`);
   return newClass;
 };
 
@@ -88,6 +72,13 @@ const updateClass = async (id, _class) => {
   const updatedClass = await ClassModel.findByIdAndUpdate(id, _class, {
     new: true,
   });
+
+  await LessonRepository.initLessonSchedule(
+    id,
+    _class.lessonSchedules,
+    _class.totalNumberOfLessons
+  );
+
   logger.info(`Update class successfully - ${JSON.stringify(updatedClass)}`);
   return updatedClass;
 };
