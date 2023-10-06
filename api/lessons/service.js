@@ -9,7 +9,7 @@ const getLessons = async ({ start, end }, id) => {
     ...(end && { $lte: end }),
   };
 
-  console.log(lessonDay);
+  logger.info(`Filter lesson by ${JSON.stringify(lessonDay)} - ${id}`);
   const lessons = await LessonModel.find({
     ...(id && { teacher: new mongoose.Types.ObjectId(id) }),
     ...(Object.keys(lessonDay).length ? { lessonDay } : {}),
@@ -23,6 +23,11 @@ const getLessons = async ({ start, end }, id) => {
         select: "name",
       },
     });
+  logger.info(
+    `Get lessons successfully - by userId ${id} lessonDay from ${start} to ${end} - data: ${JSON.stringify(
+      lessons
+    )}`
+  );
   return lessons;
 };
 
