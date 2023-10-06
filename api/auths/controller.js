@@ -29,7 +29,7 @@ const verifyToken = async (req, res) => {
 
 const changePassword = async (req, res) => {
   const { oldPassword, newPassword } = req.body;
-  const result = await service.changePassword(req.user.id, {
+  const result = await service.changePassword(req.user._id, {
     oldPassword,
     newPassword,
   });

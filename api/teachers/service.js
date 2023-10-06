@@ -8,10 +8,6 @@ import crypt from "../../utils/crypt.js";
 
 const getAllTeachers = async () => {
   let teachers = await AccountRepository.find({ role: TEACHER_ROLE });
-  teachers = teachers.map((teacher) => {
-    delete teacher.password;
-    return teacher;
-  });
   logger.info(
     `Get all teachers successfully - ${
       teachers.length
@@ -38,7 +34,6 @@ const addTeacher = async (teacher, createdBy) => {
     teacher: newTeacher._id,
     password: crypt.bcryptHash(teacher.password),
   });
-  delete newAccount.password;
   logger.info(`Add teacher successfully - ${JSON.stringify(newTeacher)}`);
   return newAccount;
 };
@@ -47,7 +42,6 @@ const updateTeacher = async (id, teacher) => {
   const updatedTeacher = await TeacherModel.findByIdAndUpdate(id, teacher, {
     new: true,
   });
-  delete updatedTeacher.password;
   logger.info(
     `Update teacher successfully - ${JSON.stringify(updatedTeacher)}`
   );

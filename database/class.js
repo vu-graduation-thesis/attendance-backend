@@ -5,7 +5,8 @@ const classSchema = new mongoose.Schema(
     name: String,
     startTime: Date,
     endTime: Date,
-    numberOfCredit: Number,
+    numberOfCredits: Number,
+    totalNumberOfLessons: Number,
     isActivate: Boolean,
     teacher: {
       type: mongoose.Schema.Types.ObjectId,
@@ -17,12 +18,18 @@ const classSchema = new mongoose.Schema(
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "admins",
+      ref: "accounts",
     },
+    students: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "students",
+      },
+    ],
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 const ClassModel = mongoose.model("classes", classSchema);

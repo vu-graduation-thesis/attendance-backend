@@ -9,10 +9,6 @@ import CustomException from "../../exceptions/customException.js";
 
 const getAllAdmins = async () => {
   let admins = await AccountRepository.find({ role: ADMIN_ROLE });
-  admins = admins.map((admin) => {
-    delete admin.password;
-    return admin;
-  });
   logger.info(
     `Get all admins successfully - ${admins.length} admins - ${JSON.stringify(
       admins
@@ -40,7 +36,6 @@ const addAdmin = async (admin, createdBy) => {
     admin: newAdmin._id,
     password: crypt.bcryptHash(admin.password),
   });
-  delete newAccount.password;
   logger.info(`Add admin successfully - ${JSON.stringify(newAdmin)}`);
   return newAccount;
 };
@@ -49,7 +44,6 @@ const updateAdmin = async (id, admin) => {
   const updatedAdmin = await AdminModel.findByIdAndUpdate(id, admin, {
     new: true,
   });
-  delete updatedAdmin.password;
   logger.info(`Update admin successfully - ${JSON.stringify(updatedAdmin)}`);
   return updatedAdmin;
 };

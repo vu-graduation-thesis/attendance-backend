@@ -8,10 +8,6 @@ import crypt from "../../utils/crypt.js";
 
 const getAllStudents = async () => {
   let students = await AccountRepository.find({ role: STUDENT_ROLE });
-  students = students.map((student) => {
-    delete student.password;
-    return student;
-  });
   logger.info(
     `Get all students successfully - ${
       students.length
@@ -38,7 +34,6 @@ const addStudent = async (student, createdBy) => {
     student: newStudent._id,
     password: crypt.bcryptHash(student.password),
   });
-  delete newAccount.password;
   logger.info(`Add student successfully - ${JSON.stringify(newStudent)}`);
   return newAccount;
 };
@@ -47,7 +42,6 @@ const updateStudent = async (id, student) => {
   const updatedStudent = await StudentModel.findByIdAndUpdate(id, student, {
     new: true,
   });
-  delete updatedStudent.password;
   logger.info(
     `Update student successfully - ${JSON.stringify(updatedStudent)}`
   );
