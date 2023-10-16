@@ -14,4 +14,16 @@ const batchUpload = async (req, res) => {
   });
 };
 
-export { batchUpload };
+const recognition = async (req, res) => {
+  const { file } = req;
+  const { location } = file;
+
+  res.json({
+    message: "Uploaded successfully.",
+    data: {
+      location,
+    },
+  });
+};
+
+export { batchUpload, recognition };
