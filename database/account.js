@@ -16,6 +16,10 @@ const accountSchema = new mongoose.Schema(
       type: String,
       index: true,
     },
+    phone: {
+      type: String,
+      index: true,
+    },
     role: {
       type: String,
       enum: [ADMIN_ROLE, STUDENT_ROLE, TEACHER_ROLE],

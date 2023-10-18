@@ -1,3 +1,4 @@
+import jwt from "../../utils/jwt.js";
 import service from "./service.js";
 
 const loginWithUsernamePassword = async (req, res) => {
@@ -21,6 +22,7 @@ const loginWithGoogle = async (req, res) => {
 };
 
 const verifyToken = async (req, res) => {
+  jwt.verifyToken(req.query.token);
   res.json({
     message: "Token is valid.",
     data: req.user,

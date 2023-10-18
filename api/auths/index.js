@@ -11,11 +11,7 @@ router.post(
   "/login-with-google",
   asyncRouteHandler(controller.loginWithGoogle)
 );
-router.get(
-  "/verify-token",
-  authMiddleware(),
-  asyncRouteHandler(controller.verifyToken)
-);
+router.get("/verify-token", asyncRouteHandler(controller.verifyToken));
 router.put(
   "/change-password",
   authMiddleware(),

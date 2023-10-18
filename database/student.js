@@ -17,6 +17,10 @@ const studentSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "accounts",
     },
+    account: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "accounts",
+    },
   },
   {
     timestamps: true,

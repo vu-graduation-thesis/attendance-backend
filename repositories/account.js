@@ -1,7 +1,7 @@
 import AccountModel from "../database/account.js";
 
-const findOne = (username) => {
-  return AccountModel.findOne({ username })
+const findOne = (filter) => {
+  return AccountModel.findOne(filter)
     .populate("admin")
     .populate("student")
     .populate("teacher");
@@ -11,7 +11,8 @@ const find = (filter) => {
   return AccountModel.find(filter)
     .populate("admin")
     .populate("student")
-    .populate("teacher");
+    .populate("teacher")
+    .sort({ updatedAt: -1 });
 };
 
 export default { findOne, find };
