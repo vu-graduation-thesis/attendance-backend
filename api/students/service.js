@@ -1,14 +1,20 @@
 import mongoose from "mongoose";
 import StudentModel from "../../database/student.js";
 import AccountRepository from "../../repositories/account.js";
-import { STUDENT_ROLE } from "../../utils/constant.js";
+import { EXISTED_ERROR_CODE, STUDENT_ROLE } from "../../utils/constant.js";
 import logger from "../../utils/logger.js";
 import AccountModel from "../../database/account.js";
 import crypt from "../../utils/crypt.js";
 import common from "../../utils/common.js";
+import CustomException from "../../exceptions/customException.js";
 
 const getAllStudents = async () => {
-  let students = await AccountRepository.find({ role: STUDENT_ROLE });
+  let students = await AccountRepository.find({
+    role: STUDENT_ROLE,
+    isDeleted: {
+      $ne: true,
+    },
+  });
   logger.info(
     `Get all students successfully - ${
       students.length

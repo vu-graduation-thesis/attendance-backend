@@ -20,6 +20,10 @@ const accountSchema = new mongoose.Schema(
       type: String,
       index: true,
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
     role: {
       type: String,
       enum: [ADMIN_ROLE, STUDENT_ROLE, TEACHER_ROLE],
