@@ -1,25 +1,24 @@
 import axios from "axios";
 import redis from "../../redis/index.js";
 import config from "../../config.js";
+import service from "./service.js";
 
 const { messageQueue } = redis;
 
 const detectAllFaces = async (req, res) => {
   const form = new FormData();
-  form.append('image', req.file)
-  const response = await axios.post(`${config.faceRecognitionServiceUrl}/api/face-detect`, {
-
-  })
-}
+  form.append("image", req.file);
+  const response = await axios.post(
+    `${config.faceRecognitionServiceUrl}/api/face-detect`,
+    {}
+  );
+};
 
 const training = async (req, res) => {
-  messageQueue.add({
-    userId: "123456",
-    action: "START_TRAINING_MODEL",
-  });
+  service.training(req.user?.student?.studentId, req.files);
 
   res.json({
-    message: "Push action successfully.",
+    message: "Push training action successfully.",
   });
 };
 

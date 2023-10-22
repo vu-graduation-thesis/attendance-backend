@@ -5,16 +5,17 @@ import aws from "../aws/index.js";
 
 const s3 = new aws.S3();
 
-export const cloudUpload = multer({
-  storage: multerS3({
-    s3: s3,
-    bucket: "face-recognition-service",
-    contentType: multerS3.AUTO_CONTENT_TYPE,
-    key: (req, file, cb) => {
-      cb(null, `30000/${Date.now()}-${file.originalname}`);
-    },
-  }),
-});
+export const cloudUpload = (bucket, folder) =>
+  multer({
+    storage: multerS3({
+      s3: s3,
+      bucket,
+      contentType: multerS3.AUTO_CONTENT_TYPE,
+      key: (req, file, cb) => {
+        cb(null, `${folder}/${Date.now()}-${file.originalname}`);
+      },
+    }),
+  });
 
 export const localUpload = multer({
   storage: multer.diskStorage({

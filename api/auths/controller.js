@@ -22,10 +22,11 @@ const loginWithGoogle = async (req, res) => {
 };
 
 const verifyToken = async (req, res) => {
-  jwt.verifyToken(req.query.token);
+  const token = req.headers?.authorization?.split(" ")?.[1];
+  jwt.verifyToken(token);
   res.json({
     message: "Token is valid.",
-    data: req.user,
+    data: true,
   });
 };
 

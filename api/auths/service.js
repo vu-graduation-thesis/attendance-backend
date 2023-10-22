@@ -4,8 +4,10 @@ import AccountRepository from "../../repositories/account.js";
 import jwtUtil from "../../utils/jwt.js";
 import cryptUtil from "../../utils/crypt.js";
 import {
+  ACCOUNT_NOT_FOUND,
   LOGIN_WITH_GOOGLE,
   LOGIN_WITH_USERNAME_PASSWORD,
+  WRONG_PASSWORD,
 } from "../../utils/constant.js";
 import logger from "../../utils/logger.js";
 import AccountModel from "../../database/account.js";
@@ -16,11 +18,11 @@ const loginWithUsernamePassword = async (username, password) => {
   }).select("+password");
   if (!account) {
     logger.error(`Account with username ${username} not found`);
-    throw new CustomException(400, "Account not found");
+    throw new CustomException(400, "Account not found", ACCOUNT_NOT_FOUND);
   }
   if (!cryptUtil.bcryptCompare(password, account.password)) {
     logger.error(`Wrong password for account with username ${username}`);
-    throw new CustomException(403, "Wrong password");
+    throw new CustomException(403, "Wrong password", WRONG_PASSWORD);
   }
 
   logger.info(`Account with username ${username} logged in`);

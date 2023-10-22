@@ -10,3 +10,8 @@ export const STUDENT_ROLE = "STUDENT";
 export const TEACHER_ROLE = "TEACHER";
 
 export const EXISTED_ERROR_CODE = "EXISTED_ERROR_CODE";
+
+export const ACCOUNT_NOT_FOUND = "ACCOUNT_NOT_FOUND";
+export const WRONG_PASSWORD = "WRONG_PASSWORD";
+
+export const TOKEN_IS_INVALID = "TOKEN_IS_INVALID";
