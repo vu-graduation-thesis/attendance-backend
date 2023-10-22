@@ -13,7 +13,7 @@ const authMiddleware =
       return next(new CustomException(401, "Unauthorized"));
     }
 
-    if (roles && !roles?.includes(payload.role)) {
+    if (!!roles?.length && !roles?.includes(payload.role)) {
       logger.error(
         `User with username ${payload.username} tried to access ${request.originalUrl} but was forbidden`
       );

@@ -84,4 +84,17 @@ const changePassword = async (id, { oldPassword, newPassword }) => {
   return { message: "Change password successfully" };
 };
 
-export default { loginWithUsernamePassword, loginWithGoogle, changePassword };
+const getUserInfo = async (_id) => {
+  let userInfo = await AccountRepository.findOne({ _id });
+  logger.info(
+    `Get all userInfo successfully - userInfo - ${JSON.stringify(userInfo)}`
+  );
+  return userInfo;
+};
+
+export default {
+  loginWithUsernamePassword,
+  loginWithGoogle,
+  changePassword,
+  getUserInfo,
+};

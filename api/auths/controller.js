@@ -42,9 +42,18 @@ const changePassword = async (req, res) => {
   });
 };
 
+const getUserInfo = async (req, res) => {
+  const result = await service.getUserInfo(req?.user?._id);
+  res.json({
+    message: "Get all admins successfully",
+    data: result,
+  });
+};
+
 export default {
   loginWithUsernamePassword,
   loginWithGoogle,
   verifyToken,
   changePassword,
+  getUserInfo,
 };

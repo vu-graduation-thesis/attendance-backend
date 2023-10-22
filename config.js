@@ -11,6 +11,7 @@ const config = {
     secretKey: process.env.AWS_SECRET_KEY,
   },
   jwtSecret: process.env.JWT_SECRET_KEY,
+  faceRecognitionServiceUrl: process.env.FACE_RECOGNITION_SERVICE_URL,
 };
 
 export default config;

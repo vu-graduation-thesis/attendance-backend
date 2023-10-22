@@ -18,4 +18,6 @@ router.put(
   asyncRouteHandler(controller.changePassword)
 );
 
+router.get("/me", authMiddleware(), asyncRouteHandler(controller.getUserInfo));
+
 export default router;

@@ -7,7 +7,10 @@ import AccountModel from "../../database/account.js";
 import crypt from "../../utils/crypt.js";
 
 const getAllTeachers = async () => {
-  let teachers = await AccountRepository.find({ role: TEACHER_ROLE });
+  let teachers = await AccountRepository.find({
+    role: TEACHER_ROLE,
+    isDeleted: { $ne: true },
+  });
   logger.info(
     `Get all teachers successfully - ${
       teachers.length
