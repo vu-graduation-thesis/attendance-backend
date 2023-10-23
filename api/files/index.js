@@ -11,7 +11,7 @@ const router = Router();
 router.post(
   "/batch-upload",
   authMiddleware(STUDENT_ROLE),
-  cloudUpload.array("files"),
+  cloudUpload("face").array("files"),
   asyncRouteHandler(controller.batchUpload)
 );
 

@@ -12,18 +12,27 @@ import { cloudUpload } from "../../middlewares/fileUpload.js";
 const router = Router();
 
 router.post(
-  "/face-detect",
-  authMiddleware(ADMIN_ROLE, TEACHER_ROLE),
-  asyncRouteHandler(controller.detectAllFaces)
+  "/recognize/:lessonId",
+  authMiddleware(STUDENT_ROLE),
+  (req, res, next) => {
+    req.folder = req.params.lessonId;
+    req.bucket = "face-recognition-service";
+    req.lessonId = req.params.lessonId;
+    next();
+  },
+  cloudUpload("face-recognition-service").single("file"),
+  asyncRouteHandler(controller.recognize)
 );
 
 router.post(
   "/training",
   authMiddleware(STUDENT_ROLE),
-  cloudUpload((req, file, cb) => ({
-    bucket: "face-recognition-service",
-    folder: req.user?.student?.studentId,
-  })),
+  (req, res, next) => {
+    req.folder = req.user?.identity;
+    req.bucket = "face-recognition-service";
+    next();
+  },
+  cloudUpload("face-recognition-service").array("files", 10),
   asyncRouteHandler(controller.training)
 );
 

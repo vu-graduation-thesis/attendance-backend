@@ -13,7 +13,7 @@ import logger from "../../utils/logger.js";
 import AccountModel from "../../database/account.js";
 
 const loginWithUsernamePassword = async (username, password) => {
-  const account = await AccountModel.findOne({
+  const account = await AccountRepository.findOne({
     username,
   }).select("+password");
   if (!account) {
@@ -25,13 +25,14 @@ const loginWithUsernamePassword = async (username, password) => {
     throw new CustomException(403, "Wrong password", WRONG_PASSWORD);
   }
 
-  logger.info(`Account with username ${username} logged in`);
+  logger.info(`Account with username ${JSON.stringify(account)} logged in`);
   const token = jwtUtil.generateToken(
     {
       _id: account._id,
       username: account.username,
       role: account.role,
       type: LOGIN_WITH_USERNAME_PASSWORD,
+      identity: account?.student?.studentId || account?.teacher?.teacherId,
     },
     {
       expiresIn: "7d",

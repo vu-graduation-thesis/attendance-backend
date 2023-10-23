@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const studentSchema = new mongoose.Schema(
   {
     studentId: {
-      type: Number,
+      type: String,
       unique: true,
       index: true,
       sparse: true,
@@ -20,6 +20,15 @@ const studentSchema = new mongoose.Schema(
     account: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "accounts",
+    },
+    verified: {
+      type: Boolean,
+      default: false,
+    },
+    verifiedAt: Date,
+    verifiedResourse: {
+      bucket: String,
+      folder: String,
     },
   },
   {

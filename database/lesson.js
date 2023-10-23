@@ -24,11 +24,17 @@ const lessonSchema = new mongoose.Schema(
         },
       },
     ],
+    resource: {
+      bucket: String,
+      folder: String,
+    },
   },
   {
     timestamps: true,
   }
 );
+
+lessonSchema.index({ "attendances.student": 1 }, { unique: true });
 
 const LessonModel = mongoose.model("lessons", lessonSchema);
 

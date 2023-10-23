@@ -5,14 +5,14 @@ import aws from "../aws/index.js";
 
 const s3 = new aws.S3();
 
-export const cloudUpload = (bucket, folder) =>
+export const cloudUpload = (bucket) =>
   multer({
     storage: multerS3({
       s3: s3,
       bucket,
       contentType: multerS3.AUTO_CONTENT_TYPE,
       key: (req, file, cb) => {
-        cb(null, `${folder}/${Date.now()}-${file.originalname}`);
+        cb(null, `${req.folder}/${Date.now()}-${file.originalname}`);
       },
     }),
   });
