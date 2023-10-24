@@ -24,4 +24,10 @@ router.put(
   asyncRouteHandler(controller.updateStudent)
 );
 
+router.get(
+  "/:id",
+  authMiddleware(),
+  asyncRouteHandler(controller.getStudentDetail)
+);
+
 export default router;

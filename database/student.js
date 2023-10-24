@@ -26,7 +26,7 @@ const studentSchema = new mongoose.Schema(
       default: false,
     },
     verifiedAt: Date,
-    verifiedResourse: {
+    verifiedResource: {
       bucket: String,
       folder: String,
     },

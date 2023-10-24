@@ -24,4 +24,12 @@ const updateStudent = async (req, res) => {
   });
 };
 
-export default { getAllStudents, addStudent, updateStudent };
+const getStudentDetail = async (req, res) => {
+  const student = await service.getStudentDetail(req.params.id);
+  res.json({
+    message: "Get student detail successfully",
+    data: student,
+  });
+};
+
+export default { getAllStudents, addStudent, updateStudent, getStudentDetail };
