@@ -2,12 +2,12 @@ import { TEACHER_ROLE } from "../../utils/constant.js";
 import service from "./service.js";
 
 const getLessons = async (req, res) => {
-  const id = req.user.role === TEACHER_ROLE ? req.user._id : undefined;
+  const { filter } = req.query;
   const timeRange = {
     start: req.query.start,
     end: req.query.end,
   };
-  const lessons = await service.getLessons(timeRange, id);
+  const lessons = await service.getLessons(timeRange, filter);
   res.json({
     message: "Get all lessons successfully",
     data: lessons,

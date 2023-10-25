@@ -4,14 +4,15 @@ import LessonModel from "../../database/lesson.js";
 import logger from "../../utils/logger.js";
 import LessonRepository from "../../repositories/lesson.js";
 
-const getAllClasses = async () => {
-  const classes = await ClassModel.find({})
+const getAllClasses = async (filter) => {
+  logger.info(`Start get all classes with filter - ${JSON.stringify(filter)}`);
+  const classes = await ClassModel.find(filter)
     .populate("teacher")
     .populate("subject")
     .populate("students")
     .populate("createdBy");
   logger.info(
-    `Get all classes successfully - ${
+    `Get all classes successfully with filer - ${JSON.stringify(filter)} - ${
       classes.length
     } classes - ${JSON.stringify(classes)}`
   );

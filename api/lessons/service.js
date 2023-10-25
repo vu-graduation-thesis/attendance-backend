@@ -3,16 +3,16 @@ import LessonModel from "../../database/lesson.js";
 import logger from "../../utils/logger.js";
 import { DateTime } from "luxon";
 
-const getLessons = async ({ start, end }, id) => {
+const getLessons = async ({ start, end }, filter) => {
   const lessonDay = {
     ...(start && { $gte: DateTime.fromISO(start).toISODate() }),
     ...(end && { $lte: end }),
   };
 
-  logger.info(`Filter lesson by ${JSON.stringify(lessonDay)} - ${id}`);
+  logger.info(`Filter lesson by ${JSON.stringify(lessonDay)}`);
   const lessons = await LessonModel.find({
-    ...(id && { teacher: new mongoose.Types.ObjectId(id) }),
     ...(Object.keys(lessonDay).length ? { lessonDay } : {}),
+    ...(filter || {}),
   })
     .populate("classroom")
     .populate({
@@ -24,7 +24,7 @@ const getLessons = async ({ start, end }, id) => {
       },
     });
   logger.info(
-    `Get lessons successfully - by userId ${id} lessonDay from ${start} to ${end} - data: ${JSON.stringify(
+    `Get lessons successfully lessonDay from ${start} to ${end} - data: ${JSON.stringify(
       lessons
     )}`
   );

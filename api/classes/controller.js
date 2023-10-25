@@ -1,7 +1,8 @@
 import service from "./service.js";
 
 const getAllClasses = async (req, res) => {
-  const classes = await service.getAllClasses();
+  const { filter } = req.query;
+  const classes = await service.getAllClasses(filter);
   res.json({
     message: "Get all classes successfully",
     data: classes,
