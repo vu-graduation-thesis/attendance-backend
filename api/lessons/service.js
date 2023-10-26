@@ -17,11 +17,22 @@ const getLessons = async ({ start, end }, filter) => {
     .populate("classroom")
     .populate({
       path: "class",
-      populate: {
-        path: "teacher",
-        model: "teachers",
-        select: "name",
-      },
+      populate: [
+        {
+          path: "teacher",
+          model: "teachers",
+          select: "name",
+        },
+        {
+          path: "subject",
+          model: "subjects",
+          select: "name",
+        },
+        {
+          path: "students",
+          model: "students",
+        },
+      ],
     });
   logger.info(
     `Get lessons successfully lessonDay from ${start} to ${end} - data: ${JSON.stringify(

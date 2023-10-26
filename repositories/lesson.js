@@ -17,6 +17,7 @@ const initLessonSchedule = (classId, lessonSchedules, totalNumberOfLessons) => {
       class: new mongoose.Types.ObjectId(classId),
       lessons: schedule.lessons,
       lessonDay: date.toISO(),
+      order: lessons.length + 1,
     });
     schedulePointer++;
     if (schedulePointer >= lessonSchedules?.length) {

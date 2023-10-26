@@ -28,6 +28,7 @@ const lessonSchema = new mongoose.Schema(
       bucket: String,
       folder: String,
     },
+    order: Number,
   },
   {
     timestamps: true,

@@ -1,24 +1,16 @@
 import { Router } from "express";
 
 import { asyncRouteHandler } from "../../middlewares/asyncRouter.js";
-import { cloudUpload, localUpload } from "../../middlewares/fileUpload.js";
 import * as controller from "./controller.js";
 import authMiddleware from "../../middlewares/auth.js";
-import { STUDENT_ROLE } from "../../utils/constant.js";
+import { ADMIN_ROLE, TEACHER_ROLE } from "../../utils/constant.js";
 
 const router = Router();
 
 router.post(
-  "/batch-upload",
-  authMiddleware(STUDENT_ROLE),
-  cloudUpload("face").array("files"),
-  asyncRouteHandler(controller.batchUpload)
-);
-
-router.post(
-  "/recognition",
-  localUpload.single("image"),
-  asyncRouteHandler(controller.recognition)
+  "/get-signed-urls",
+  authMiddleware(ADMIN_ROLE, TEACHER_ROLE),
+  asyncRouteHandler(controller.getSignedUrls)
 );
 
 export default router;

@@ -13,6 +13,7 @@ const studentSchema = new mongoose.Schema(
     avatar: String,
     birthday: Date,
     address: String,
+    administrativeClass: String,
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "accounts",

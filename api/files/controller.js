@@ -1,29 +1,12 @@
-const batchUpload = async (req, res) => {
-  if (req.files.length === 0) {
-    return res.status(400).json({
-      message: "No files were uploaded.",
-    });
-  }
-  const images = req.files.map((file) => `${file.bucket}/${file.key}`);
+import service from "./service.js";
 
+const getSignedUrls = async (req, res) => {
+  const { bucket, folder, files } = req.body;
+  const data = await service.getSignedUrls({ bucket, folder, files });
   res.json({
-    message: "Uploaded successfully.",
-    data: {
-      successCount: images,
-    },
+    message: "Get signed urls successfully",
+    data,
   });
 };
 
-const recognition = async (req, res) => {
-  const { file } = req;
-  const { location } = file;
-
-  res.json({
-    message: "Uploaded successfully.",
-    data: {
-      location,
-    },
-  });
-};
-
-export { batchUpload, recognition };
+export { getSignedUrls };
