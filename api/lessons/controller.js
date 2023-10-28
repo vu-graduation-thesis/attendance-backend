@@ -22,4 +22,16 @@ const updateLesson = async (req, res) => {
   });
 };
 
-export default { getLessons, updateLesson };
+const manualAttendance = async (req, res) => {
+  const { lessonId, studentId } = req.params;
+  const lesson = await service.manualAttendance({
+    lessonId,
+    studentId,
+  });
+  res.json({
+    message: "Manual attendance successfully",
+    data: lesson,
+  });
+};
+
+export default { getLessons, updateLesson, manualAttendance };

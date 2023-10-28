@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import LessonModel from "../../database/lesson.js";
 import logger from "../../utils/logger.js";
 import { DateTime } from "luxon";
+import CustomException from "../../exceptions/customException.js";
 
 const getLessons = async ({ start, end }, filter) => {
   const lessonDay = {
@@ -50,4 +51,32 @@ const updateLesson = async (id, lesson) => {
   return updatedLesson;
 };
 
-export default { getLessons, updateLesson };
+const manualAttendance = async ({ lessonId, studentId }) => {
+  logger.info(`Manual attendance for lesson ${lessonId} student ${studentId}`);
+  const lesson = await LessonModel.findById(lessonId);
+  if (!lesson) {
+    throw new CustomException("Lesson not found", 400, "LESSON_NOT_FOUND");
+  }
+
+  const student = lesson.attendances?.some(
+    (x) => x.student.toHexString() === studentId
+  );
+  if (!student) {
+    return LessonModel.findByIdAndUpdate(
+      lessonId,
+      {
+        $push: {
+          attendances: {
+            student: new mongoose.Types.ObjectId(studentId),
+            type: "MANUAL",
+          },
+        },
+      },
+      {
+        new: true,
+      }
+    );
+  }
+};
+
+export default { getLessons, updateLesson, manualAttendance };

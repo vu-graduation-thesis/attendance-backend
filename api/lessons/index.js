@@ -18,4 +18,10 @@ router.put(
   asyncRouteHandler(controller.updateLesson)
 );
 
+router.put(
+  "/:lessonId/manual-attendance/:studentId",
+  authMiddleware(ADMIN_ROLE, TEACHER_ROLE),
+  asyncRouteHandler(controller.manualAttendance)
+);
+
 export default router;
