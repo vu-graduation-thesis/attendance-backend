@@ -17,6 +17,7 @@ const getSignedUrls = async ({ bucket, folder, files }) => {
 
   if (folder) {
     files = await awsUtils.getFileInFolder(bucket, folder);
+    files = files?.map((file) => file.Key);
     logger.info(
       `Get files in folder ${folder} successfully, files ${JSON.stringify(
         files

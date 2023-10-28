@@ -13,14 +13,14 @@ const router = Router();
 
 router.post(
   "/recognize/:lessonId",
-  authMiddleware(STUDENT_ROLE),
+  authMiddleware(ADMIN_ROLE, TEACHER_ROLE),
   (req, res, next) => {
     req.folder = req.params.lessonId;
-    req.bucket = "face-recognition-service";
+    req.bucket = "attendance-resource";
     req.lessonId = req.params.lessonId;
     next();
   },
-  cloudUpload("face-recognition-service").single("file"),
+  cloudUpload("attendance-resource").single("file"),
   asyncRouteHandler(controller.recognize)
 );
 

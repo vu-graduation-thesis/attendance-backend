@@ -73,6 +73,8 @@ const recognizeAndUpdateAttendance = async ({
     );
 
     const studentIds = response.data?.map((result) => result.label);
+
+    // Get students and lesson info
     const [students, lesson] = await Promise.all([
       StudentModel.find({
         studentId: {
@@ -81,12 +83,15 @@ const recognizeAndUpdateAttendance = async ({
       }),
       LessonModel.findById(lessonId),
     ]);
+
+    // Create attendances
     const attendance =
       students?.map((student) => ({
         student: student._id,
         type: "AI_DETECTED",
       })) || [];
 
+    // Remove duplicate attendance
     const uniqueAttendance = attendance.reduce((acc, current) => {
       const x = acc.find(
         (item) => item.student.toHexString() === current.student.toHexString()
@@ -104,6 +109,10 @@ const recognizeAndUpdateAttendance = async ({
       {
         $set: {
           attendances: uniqueAttendance,
+          resource: {
+            bucket,
+            folder,
+          },
         },
       },
       {
