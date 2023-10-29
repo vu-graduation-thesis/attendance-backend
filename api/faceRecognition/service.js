@@ -119,7 +119,10 @@ const recognizeAndUpdateAttendance = async ({
         new: true,
       }
     );
-    return result;
+    return {
+      doc: result,
+      predict: response.data,
+    };
   } catch (error) {
     logger.error(
       `Recognize and update attendace for lesson ${lessonId} failed ${error}}`
