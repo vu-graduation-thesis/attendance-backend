@@ -1,4 +1,5 @@
 import aws from "../aws/index.js";
+import logger from "./logger.js";
 
 const s3 = new aws.S3();
 
@@ -37,4 +38,28 @@ function getPublicUrl(bucketName, objectKey, expires = 3600) {
   });
 }
 
-export default { getFileInFolder, getPublicUrl };
+async function uploadFilesToS3(files, bucketName, folderKey) {
+  const promises = files.map((file) => {
+    const params = {
+      Bucket: bucketName,
+      Key: `${folderKey}/${file.filename}`,
+      Body: file.buffer,
+    };
+
+    return new Promise((resolve, reject) => {
+      s3.upload(params, (error, data) => {
+        if (error) {
+          logger.error(`Upload file ${file.filename} to s3 failed ${error}`);
+          reject(error);
+        } else {
+          logger.info(`Upload file ${file.filename} to s3 success`);
+          resolve(data);
+        }
+      });
+    });
+  });
+
+  return Promise.allSettled(promises);
+}
+
+export default { getFileInFolder, getPublicUrl, uploadFilesToS3 };

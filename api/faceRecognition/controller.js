@@ -9,6 +9,15 @@ const recognize = async (req, res) => {
     folder,
     file,
   });
+
+  service.uploadFilesToS3({
+    bucket,
+    folder,
+    files: {
+      original: file,
+      detected: result?.output,
+    },
+  });
   res.json(result);
 };
 

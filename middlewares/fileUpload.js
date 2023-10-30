@@ -1,9 +1,15 @@
 import multer from "multer";
 import multerS3 from "multer-s3";
-
+import path from "path";
+import { dirname } from "path";
 import aws from "../aws/index.js";
+import { fileURLToPath } from "url";
 
 const s3 = new aws.S3();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+console.log(__dirname);
 
 export const cloudUpload = (bucket) =>
   multer({
@@ -20,14 +26,10 @@ export const cloudUpload = (bucket) =>
 export const localUpload = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, "uploads/");
+      cb(null, path.join(__dirname, "../uploads"));
     },
     filename: (req, file, cb) => {
-      const { originalname } = file;
-      const extension = originalname.split(".").pop();
-      const filename = `${Date.now()}.${extension}`;
-      console.log(filename);
-      cb(null, filename);
+      cb(null, Date.now() + "-" + file.originalname);
     },
   }),
 });

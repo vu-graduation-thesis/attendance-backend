@@ -7,7 +7,7 @@ import {
   STUDENT_ROLE,
   TEACHER_ROLE,
 } from "../../utils/constant.js";
-import { cloudUpload } from "../../middlewares/fileUpload.js";
+import { cloudUpload, localUpload } from "../../middlewares/fileUpload.js";
 
 const router = Router();
 
@@ -20,7 +20,7 @@ router.post(
     req.lessonId = req.params.lessonId;
     next();
   },
-  cloudUpload("attendance-resource").single("file"),
+  localUpload.single("file"),
   asyncRouteHandler(controller.recognize)
 );
 
