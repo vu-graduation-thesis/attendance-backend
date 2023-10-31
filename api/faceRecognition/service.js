@@ -7,6 +7,8 @@ import CustomException from "../../exceptions/customException.js";
 import logger from "../../utils/logger.js";
 import fs from "fs";
 import awsUtil from "../../utils/aws.js";
+import { requestRecognizeService } from "../../externalServices/faceRecognition.js";
+import AttendanceLogModel from "../../database/attendanceLog.js";
 
 const training = async (studentId, bucket, folder) => {
   try {
@@ -22,7 +24,7 @@ const training = async (studentId, bucket, folder) => {
     );
     logger.info(
       `Push training action for student ${studentId}, bucket ${bucket}, folder ${folder} successfully, response ${JSON.stringify(
-        response.data
+        recognizeResult
       )}`
     );
     await StudentModel.updateOne(
@@ -57,28 +59,59 @@ const recognizeAndUpdateAttendance = async ({
   bucket,
   folder,
   file,
+  createdBy,
 }) => {
   logger.info(`Recognize and update attendace for lesson ${lessonId}`);
   try {
-    const form = new FormData();
-    form.append("file", fs.createReadStream(file.path));
-    const response = await axios.post(
-      `${config.faceRecognitionServiceUrl}/api/recognize/image`,
-      form,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    const recognizeResult = await requestRecognizeService(file.path);
 
     logger.info(
       `Recognize and update attendace for lesson ${lessonId}, filename ${
         file.key
-      } successfully, response ${JSON.stringify(response.data)}`
+      } successfully, response ${JSON.stringify(recognizeResult)}`
     );
 
-    const studentIds = response.data?.predict?.map((result) => result.label);
+    updateLessonAttendance({
+      recognizeResult,
+      lessonId,
+      bucket,
+      folder,
+    });
+
+    updateAttendanceLog({
+      predict: recognizeResult?.predict,
+      lessonId,
+      bucket,
+      originalFilePath: file.originalname,
+      detectedFilePath: recognizeResult?.output,
+      createdBy,
+    });
+
+    return {
+      predict: recognizeResult?.predict,
+      output: recognizeResult?.output,
+    };
+  } catch (error) {
+    logger.error(
+      `Recognize and update attendace for lesson ${lessonId} failed ${error}}`
+    );
+    throw new CustomException(400, "Recognize and update attendace error");
+  }
+};
+
+const updateLessonAttendance = async ({
+  recognizeResult,
+  lessonId,
+  bucket,
+  folder,
+}) => {
+  try {
+    logger.info(
+      `Update lesson ${lessonId} attendance, bucket ${bucket}, folder ${folder}, recognizeResult ${JSON.stringify(
+        recognizeResult
+      )}`
+    );
+    const studentIds = recognizeResult?.predict?.map((result) => result.label);
 
     // Get students and lesson info
     const [students, lesson] = await Promise.all([
@@ -125,17 +158,50 @@ const recognizeAndUpdateAttendance = async ({
         new: true,
       }
     );
-    return {
-      doc: result,
-      predict: response.data?.predict,
-      output: response.data?.output,
-    };
+    logger.info(
+      `Update lesson ${lessonId} attendance, bucket ${bucket}, folder ${folder}, recognizeResult ${JSON.stringify(
+        recognizeResult
+      )} successfully`
+    );
+
+    return result;
   } catch (error) {
     logger.error(
-      `Recognize and update attendace for lesson ${lessonId} failed ${error}}`
+      `Update lesson ${lessonId} attendance, bucket ${bucket}, folder ${folder}, recognizeResult ${JSON.stringify(
+        recognizeResult
+      )} failed ${error}`
     );
-    throw new CustomException(400, "Recognize and update attendace error");
   }
+};
+
+const updateAttendanceLog = async ({
+  predict,
+  lessonId,
+  originalFilePath,
+  detectedFilePath,
+  createdBy,
+  bucket,
+}) => {
+  await AttendanceLogModel.findOneAndUpdate(
+    {
+      lessonId: lessonId,
+    },
+    {
+      createdBy,
+      $push: {
+        logs: {
+          originalFile: `${lessonId}/ORIGIN_${originalFilePath}`,
+          detectedFile: `${lessonId}/DETECTED_${detectedFilePath}`,
+          bucket,
+          predict,
+        },
+      },
+    },
+    {
+      upsert: true,
+      new: true,
+    }
+  );
 };
 
 const downloadFile = async (url, path) => {
@@ -159,30 +225,36 @@ const downloadFile = async (url, path) => {
 };
 
 const uploadFilesToS3 = async ({ files, bucket, folder }) => {
-  logger.info(`Upload files to s3 bucket ${bucket}, folder ${folder}`);
-  const localPath = `./uploads/DETECTED_${files.detected}`;
-  await downloadFile(
-    config.faceRecognitionServiceUrl + `/api/download/${files.detected}`,
-    localPath
-  );
-  await awsUtil.uploadFilesToS3(
-    [
-      {
-        filename: `ORIGIN_${files.original?.originalname}`,
-        buffer: fs.readFileSync(files.original?.path),
-      },
-      {
-        filename: `DETECTED_${files.detected}`,
-        buffer: fs.readFileSync(localPath),
-      },
-    ],
-    bucket,
-    folder
-  );
+  try {
+    logger.info(`Upload files to s3 bucket ${bucket}, folder ${folder}`);
+    const localPath = `./uploads/DETECTED_${files.detected}`;
+    await downloadFile(
+      config.faceRecognitionServiceUrl + `/api/download/${files.detected}`,
+      localPath
+    );
+    await awsUtil.uploadFilesToS3(
+      [
+        {
+          filename: `ORIGIN_${files.original?.originalname}`,
+          buffer: fs.readFileSync(files.original?.path),
+        },
+        {
+          filename: `DETECTED_${files.detected}`,
+          buffer: fs.readFileSync(localPath),
+        },
+      ],
+      bucket,
+      folder
+    );
 
-  fs.unlinkSync(files.original?.path);
-  fs.unlinkSync(localPath);
-  logger.info(`Remove local files ${files.original?.path}, ${localPath}`);
+    fs.unlinkSync(files.original?.path);
+    fs.unlinkSync(localPath);
+    logger.info(`Remove local files ${files.original?.path}, ${localPath}`);
+  } catch (error) {
+    logger.error(
+      `Upload files to s3 bucket ${bucket}, folder ${folder} failed ${error}`
+    );
+  }
 };
 
 export default { training, recognizeAndUpdateAttendance, uploadFilesToS3 };

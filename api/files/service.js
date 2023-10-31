@@ -1,3 +1,4 @@
+import CustomException from "../../exceptions/customException.js";
 import awsUtils from "../../utils/aws.js";
 import logger from "../../utils/logger.js";
 

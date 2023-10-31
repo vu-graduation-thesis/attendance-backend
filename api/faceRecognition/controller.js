@@ -2,12 +2,13 @@ import service from "./service.js";
 import studentService from "../students/service.js";
 
 const recognize = async (req, res) => {
-  const { lessonId, bucket, folder, file } = req;
+  const { lessonId, bucket, folder, file, user } = req;
   const result = await service.recognizeAndUpdateAttendance({
     lessonId,
     bucket,
     folder,
     file,
+    createdBy: user?._id,
   });
 
   service.uploadFilesToS3({
