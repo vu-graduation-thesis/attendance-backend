@@ -2,12 +2,17 @@ import mongoose from "mongoose";
 
 const classSchema = new mongoose.Schema(
   {
+    classId: String,
     name: String,
     startTime: Date,
     endTime: Date,
     numberOfCredits: Number,
     totalNumberOfLessons: Number,
     isActivate: Boolean,
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
     teacher: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "teachers",

@@ -6,7 +6,12 @@ import LessonRepository from "../../repositories/lesson.js";
 
 const getAllClasses = async (filter) => {
   logger.info(`Start get all classes with filter - ${JSON.stringify(filter)}`);
-  const classes = await ClassModel.find(filter)
+  const classes = await ClassModel.find({
+    isDeleted: {
+      $ne: true,
+    },
+    ...(filter || {}),
+  })
     .populate("teacher")
     .populate("subject")
     .populate("students")

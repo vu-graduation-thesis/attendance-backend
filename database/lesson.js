@@ -35,8 +35,6 @@ const lessonSchema = new mongoose.Schema(
   }
 );
 
-lessonSchema.index({ "attendances.student": 1 }, { unique: true });
-
 const LessonModel = mongoose.model("lessons", lessonSchema);
 
 export default LessonModel;
