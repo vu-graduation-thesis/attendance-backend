@@ -32,7 +32,7 @@ router.post(
     req.bucket = "face-recognition-service";
     next();
   },
-  cloudUpload("face-recognition-service").array("files", 10),
+  localUpload.array("files", 10),
   asyncRouteHandler(controller.training)
 );
 

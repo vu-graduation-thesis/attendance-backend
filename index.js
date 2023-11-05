@@ -9,6 +9,14 @@ import exceptionHandler from "./middlewares/exceptionHandler.js";
 import "./redis/index.js";
 import logger from "./utils/logger.js";
 
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+global.__dirname = __dirname;
+
 const app = express();
 
 app.use(cors());

@@ -11,6 +11,7 @@ import adminRouter from "./admins/index.js";
 import classRouter from "./classes/index.js";
 import lessonRouter from "./lessons/index.js";
 import attendanceLogRouter from "./attendanceLogs/index.js";
+import mailRouter from "./mails/index.js";
 
 const router = Router();
 
@@ -25,5 +26,6 @@ router.use("/admins", adminRouter);
 router.use("/classes", classRouter);
 router.use("/lessons", lessonRouter);
 router.use("/attendance-logs", attendanceLogRouter);
+router.use("/mails", mailRouter);
 
 export default router;

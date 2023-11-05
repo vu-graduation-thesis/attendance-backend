@@ -17,3 +17,20 @@ export const requestRecognizeService = async (filePath) => {
   );
   return response.data;
 };
+
+export const requestTrainingService = async (studentId, files) => {
+  const form = new FormData();
+  files.forEach((file) => {
+    form.append("files", fs.createReadStream(file));
+  });
+  const response = await axios.post(
+    `${config.faceRecognitionServiceUrl}/api/training/${studentId}`,
+    form,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+  return response.data;
+};

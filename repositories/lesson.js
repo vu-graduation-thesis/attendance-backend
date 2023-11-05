@@ -8,6 +8,7 @@ const initLessonSchedule = (classId, lessonSchedules, totalNumberOfLessons) => {
   let schedulePointer = 0;
   while (lessons.length < totalNumberOfLessons) {
     const schedule = lessonSchedules?.[schedulePointer];
+    // missing case: schedules is same week
     const date = DateTime.fromFormat(schedule.startDay, "dd/MM/yyyy")
       .setZone("Asia/Ho_Chi_Minh")
       .plus({ days: lessons.length * 7 });

@@ -10,10 +10,7 @@ const getSignedUrls = async ({ bucket, folder, files }) => {
   );
   if (!bucket || (!folder && !files)) {
     logger.error(`Invalid request, please provide bucket and folder or files`);
-    throw new CustomException(
-      "Invalid request",
-      "Please provide bucket and folder or files"
-    );
+    throw new CustomException(400, "Please provide bucket and folder or files");
   }
 
   if (folder) {

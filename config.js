@@ -12,6 +12,12 @@ const config = {
   },
   jwtSecret: process.env.JWT_SECRET_KEY,
   faceRecognitionServiceUrl: process.env.FACE_RECOGNITION_SERVICE_URL,
+  mail: {
+    host: process.env.MAIL_HOST,
+    port: process.env.MAIL_PORT,
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASSWORD,
+  },
 };
 
 export default config;

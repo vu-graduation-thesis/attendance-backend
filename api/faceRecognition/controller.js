@@ -24,7 +24,7 @@ const recognize = async (req, res) => {
 
 const training = async (req, res) => {
   const { user, bucket, folder, files } = req;
-  service.training(user?.identity, bucket, folder);
+  service.training({ studentId: user?.identity, bucket, folder, files });
   studentService.updateStudent(user?._id, {
     student: {
       avatar: files?.[0]?.key,

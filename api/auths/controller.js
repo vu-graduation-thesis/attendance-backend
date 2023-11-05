@@ -12,8 +12,8 @@ const loginWithUsernamePassword = async (req, res) => {
 };
 
 const loginWithGoogle = async (req, res) => {
-  const { username, password } = req.body;
-  const result = await service.loginWithGoogle(username, password);
+  const { idToken } = req.body;
+  const result = await service.loginWithGoogle(idToken);
 
   res.json({
     message: "Login successfully.",

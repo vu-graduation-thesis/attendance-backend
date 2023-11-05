@@ -7,24 +7,26 @@ import CustomException from "../../exceptions/customException.js";
 import logger from "../../utils/logger.js";
 import fs from "fs";
 import awsUtil from "../../utils/aws.js";
-import { requestRecognizeService } from "../../externalServices/faceRecognition.js";
+import {
+  requestRecognizeService,
+  requestTrainingService,
+} from "../../externalServices/faceRecognition.js";
 import AttendanceLogModel from "../../database/attendanceLog.js";
+import path from "path";
 
-const training = async (studentId, bucket, folder) => {
+const training = async ({ studentId, bucket, folder, files }) => {
   try {
     logger.info(
       `Push training action for student ${studentId}, bucket ${bucket}, folder ${folder}`
     );
-    const response = await axios.post(
-      `${config.faceRecognitionServiceUrl}/api/training/${studentId}`,
-      {
-        bucket,
-        folder_path: folder,
-      }
+    console.log("studentId", files);
+    const response = await requestTrainingService(
+      studentId,
+      files.map((file) => file.path)
     );
     logger.info(
       `Push training action for student ${studentId}, bucket ${bucket}, folder ${folder} successfully, response ${JSON.stringify(
-        recognizeResult
+        response
       )}`
     );
     await StudentModel.updateOne(
@@ -42,6 +44,18 @@ const training = async (studentId, bucket, folder) => {
         },
       }
     );
+
+    awsUtil.uploadFilesToS3(
+      files.map((file) => ({
+        filename: file.originalname,
+        buffer: fs.readFileSync(file.path),
+      })),
+      bucket,
+      folder
+    );
+
+    fs.unlinkSync(files.original?.path);
+
     logger.info(
       `Update student ${studentId} verified status to true successfully`
     );

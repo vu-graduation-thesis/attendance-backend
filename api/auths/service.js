@@ -42,20 +42,24 @@ const loginWithUsernamePassword = async (username, password) => {
 };
 
 const loginWithGoogle = async (ggToken) => {
-  const result = await GoogleService.loginWithGoogle(ggToken);
+  const result = await GoogleService.verifyGoogleToken(ggToken);
+  console.log(result.data);
   const account =
     result &&
     (await AccountRepository.findOne({
-      email: result?.email,
+      email: result?.data?.email,
     }));
+
   if (!account) {
     logger.error(
-      `Account login with Google by email ${result?.email || ggToken} not found`
+      `Account login with Google by email ${
+        result?.data?.email || ggToken
+      } not found`
     );
-    throw new CustomException(400, "Account not found");
+    throw new CustomException(400, "Account not found", ACCOUNT_NOT_FOUND);
   }
   logger.info(
-    `Account with Google by email ${result?.email} ${account.username} logged in`
+    `Account with Google by email ${result?.data?.email} ${account.username} logged in`
   );
   const token = jwtUtil.generateToken(
     {
@@ -63,6 +67,7 @@ const loginWithGoogle = async (ggToken) => {
       username: account.username,
       role: account.role,
       type: LOGIN_WITH_GOOGLE,
+      identity: account?.student?.studentId || account?.teacher?.teacherId,
     },
     {
       expiresIn: "7d",
