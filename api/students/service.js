@@ -88,11 +88,13 @@ const getStudentDetail = async (id) => {
   }
 
   const { bucket, folder } = account.student?.verifiedResource || {};
-  console.log(bucket, folder);
-  const files = await awsUtils.getFileInFolder(bucket, folder);
-  const publicUrls = await Promise.all(
-    files.map((file) => awsUtils.getPublicUrl(bucket, file?.Key))
-  );
+  let publicUrls;
+  if (bucket && folder) {
+    const files = await awsUtils.getFileInFolder(bucket, folder);
+    publicUrls = await Promise.all(
+      files.map((file) => awsUtils.getPublicUrl(bucket, file?.Key))
+    );
+  }
 
   logger.info(
     `Get student detail from database successfully - ${JSON.stringify({
