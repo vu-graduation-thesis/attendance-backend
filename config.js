@@ -18,6 +18,7 @@ const config = {
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASSWORD,
   },
+  domain: process.env.DOMAIN,
 };
 
 export default config;
