@@ -30,12 +30,15 @@ const getClassById = async (id) => {
       .populate("teacher")
       .populate("subject")
       .populate("students")
-      .populate("createdBy"),
+      .populate("createdBy")
+      .lean(),
     LessonModel.find({
       class: id,
-    }).populate("classroom"),
+    })
+      .populate("classroom")
+      .lean(),
   ]);
-  _class._doc.lessons = lessons;
+  _class.lessons = lessons;
 
   logger.info(`Get class by id successfully - ${JSON.stringify(_class)}`);
   return _class;

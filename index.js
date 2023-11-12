@@ -6,7 +6,7 @@ import apiRouter from "./api/index.js";
 import config from "./config.js";
 import "./database/index.js";
 import exceptionHandler from "./middlewares/exceptionHandler.js";
-import "./redis/index.js";
+// import "./redis/index.js";
 import logger from "./utils/logger.js";
 
 import { dirname } from "path";

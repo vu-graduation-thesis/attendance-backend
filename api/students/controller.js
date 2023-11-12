@@ -32,4 +32,27 @@ const getStudentDetail = async (req, res) => {
   });
 };
 
-export default { getAllStudents, addStudent, updateStudent, getStudentDetail };
+const verifyStatus = async (req, res) => {
+  const data = await service.verifyStatus();
+  res.json({
+    message: "Get verify status successfully",
+    data,
+  });
+};
+
+const batchUpload = async (req, res) => {
+  const data = await service.batchUpload(req.file, req.user._id);
+  res.json({
+    message: "Batch upload successfully",
+    data,
+  });
+};
+
+export default {
+  getAllStudents,
+  addStudent,
+  updateStudent,
+  getStudentDetail,
+  verifyStatus,
+  batchUpload,
+};

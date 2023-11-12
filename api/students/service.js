@@ -1,13 +1,19 @@
 import mongoose from "mongoose";
 import StudentModel from "../../database/student.js";
 import AccountRepository from "../../repositories/account.js";
-import { EXISTED_ERROR_CODE, STUDENT_ROLE } from "../../utils/constant.js";
+import {
+  EXISTED_ERROR_CODE,
+  NOT_FOUND_ERROR_CODE,
+  STUDENT_ROLE,
+} from "../../utils/constant.js";
 import logger from "../../utils/logger.js";
 import AccountModel from "../../database/account.js";
 import crypt from "../../utils/crypt.js";
 import common from "../../utils/common.js";
 import CustomException from "../../exceptions/customException.js";
 import awsUtils from "../../utils/aws.js";
+import fs from "fs";
+import csvParser from "csv-parser";
 
 const getAllStudents = async () => {
   let students = await AccountRepository.find({
@@ -106,4 +112,73 @@ const getStudentDetail = async (id) => {
   return { ...account._doc, files: publicUrls };
 };
 
-export default { getAllStudents, addStudent, updateStudent, getStudentDetail };
+export const verifyStatus = async () => {
+  const [verified, total] = await Promise.all([
+    StudentModel.countDocuments({
+      verified: true,
+    }),
+    StudentModel.countDocuments(),
+  ]);
+
+  return {
+    verified,
+    total,
+  };
+};
+
+const batchUpload = async (file, createdBy) => {
+  const result = [];
+  return new Promise((resolve, reject) => {
+    fs.createReadStream(file.path)
+      .pipe(csvParser())
+      .on("data", async (row) => {
+        const data = {
+          username: row["Mã sinh viên"],
+          phone: row["Số điện thoại"],
+          email: row["Email"],
+          student: {
+            studentId: row["Mã sinh viên"],
+            name: row["Họ tên"],
+            email: row["Email"],
+            address: row["Địa chỉ"],
+            administrativeClass: row["Lớp hành chính"],
+          },
+          createdBy,
+        };
+        try {
+          await addStudent(data);
+          result.push({
+            status: "success",
+            data,
+          });
+        } catch (err) {
+          logger.error(
+            `Error when batch upload student ${data?.username} - ${err}`
+          );
+          result.push({
+            status: "error",
+            data,
+            error: err,
+          });
+        }
+      })
+      .on("end", async () => {
+        logger.info(`Batch upload student successfully - ${result.length}`);
+        setTimeout(() => {
+          resolve(result);
+        }, 500);
+      })
+      .on("error", (err) => {
+        reject(err);
+      });
+  });
+};
+
+export default {
+  getAllStudents,
+  addStudent,
+  updateStudent,
+  getStudentDetail,
+  verifyStatus,
+  batchUpload,
+};
