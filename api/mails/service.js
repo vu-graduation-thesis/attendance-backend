@@ -1,3 +1,4 @@
+import config from "../../config.js";
 import logger from "../../utils/logger.js";
 import mailUtil from "../../utils/mail/index.js";
 
@@ -14,7 +15,7 @@ const sendMail = async ({ recipients = [], mailType }) => {
 
   recipients.forEach((recipient) => {
     mailUtil.send(mailType, recipient, subject, {
-      link: "http://localhost:8080/collect_face",
+      link: `${config.domain}/collect_face`,
       email: recipient,
     });
   });

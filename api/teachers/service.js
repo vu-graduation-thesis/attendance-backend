@@ -11,6 +11,7 @@ import AccountModel from "../../database/account.js";
 import crypt from "../../utils/crypt.js";
 import CustomException from "../../exceptions/customException.js";
 import mailUtils from "../../utils/mail/index.js";
+import config from "../../config.js";
 
 const getAllTeachers = async () => {
   let teachers = await AccountRepository.find({
@@ -48,7 +49,7 @@ const addTeacher = async (teacher, createdBy) => {
 
   const subject = "Thông tin tài khoản giảng viên mới";
   mailUtils.send("new_teacher_account", teacher.email, subject, {
-    link: "http://localhost:8080/",
+    link: config.domain,
     username: teacher.username,
     password: teacher.password,
   });
