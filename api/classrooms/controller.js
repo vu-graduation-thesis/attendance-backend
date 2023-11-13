@@ -24,4 +24,12 @@ const updateClassroom = async (req, res) => {
   });
 };
 
-export default { getAllClassrooms, addClassroom, updateClassroom };
+const batchUpload = async (req, res) => {
+  const data = await service.batchUpload(req.file, req.user._id);
+  res.json({
+    message: "Batch upload successfully",
+    data,
+  });
+};
+
+export default { getAllClassrooms, addClassroom, updateClassroom, batchUpload };

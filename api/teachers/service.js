@@ -12,6 +12,8 @@ import crypt from "../../utils/crypt.js";
 import CustomException from "../../exceptions/customException.js";
 import mailUtils from "../../utils/mail/index.js";
 import config from "../../config.js";
+import fs from "fs";
+import csvParser from "csv-parser";
 
 const getAllTeachers = async () => {
   let teachers = await AccountRepository.find({
@@ -87,4 +89,51 @@ const updateTeacher = async (id, data = {}) => {
   logger.info(`Update teacher successfully - payload ${JSON.stringify(data)}`);
 };
 
-export default { getAllTeachers, addTeacher, updateTeacher };
+const batchUpload = async (file, createdBy) => {
+  const result = [];
+  return new Promise((resolve, reject) => {
+    fs.createReadStream(file.path)
+      .pipe(csvParser())
+      .on("data", async (row) => {
+        const data = {
+          username:
+            row["Mã giảng viên"] || row["Email"] || row["Số điện thoại"],
+          phone: row["Số điện thoại"],
+          email: row["Email"],
+          teacher: {
+            name: row["Họ tên"],
+            email: row["Email"],
+            address: row["Địa chỉ"],
+          },
+          createdBy,
+        };
+        try {
+          await addTeacher(data, createdBy);
+          result.push({
+            status: "success",
+            data,
+          });
+        } catch (err) {
+          logger.error(
+            `Error when batch upload teacher ${data?.username} - ${err}`
+          );
+          result.push({
+            status: "error",
+            data,
+            error: err,
+          });
+        }
+      })
+      .on("end", async () => {
+        logger.info(`Batch upload teacher successfully - ${result.length}`);
+        setTimeout(() => {
+          resolve(result);
+        }, 500);
+      })
+      .on("error", (err) => {
+        reject(err);
+      });
+  });
+};
+
+export default { getAllTeachers, addTeacher, updateTeacher, batchUpload };

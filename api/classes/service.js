@@ -92,4 +92,9 @@ const updateClass = async (id, _class) => {
   return updatedClass;
 };
 
-export default { getAllClasses, addClass, updateClass, getClassById };
+export default {
+  getAllClasses,
+  addClass,
+  updateClass,
+  getClassById,
+};

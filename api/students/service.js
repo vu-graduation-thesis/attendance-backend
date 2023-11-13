@@ -146,7 +146,7 @@ const batchUpload = async (file, createdBy) => {
           createdBy,
         };
         try {
-          await addStudent(data);
+          await addStudent(data, createdBy);
           result.push({
             status: "success",
             data,

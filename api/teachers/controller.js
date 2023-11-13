@@ -24,4 +24,12 @@ const updateTeacher = async (req, res) => {
   });
 };
 
-export default { getAllTeachers, addTeacher, updateTeacher };
+const batchUpload = async (req, res) => {
+  const data = await service.batchUpload(req.file, req.user._id);
+  res.json({
+    message: "Batch upload successfully",
+    data,
+  });
+};
+
+export default { getAllTeachers, addTeacher, updateTeacher, batchUpload };

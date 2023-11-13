@@ -33,4 +33,9 @@ const updateClass = async (req, res) => {
   });
 };
 
-export default { getAllClasses, addClass, updateClass, getClassById };
+export default {
+  getAllClasses,
+  addClass,
+  updateClass,
+  getClassById,
+};

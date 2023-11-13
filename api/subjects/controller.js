@@ -24,4 +24,12 @@ const updateSubject = async (req, res) => {
   });
 };
 
-export default { getAllSubjects, addSubject, updateSubject };
+const batchUpload = async (req, res) => {
+  const data = await service.batchUpload(req.file, req.user._id);
+  res.json({
+    message: "Batch upload successfully",
+    data,
+  });
+};
+
+export default { getAllSubjects, addSubject, updateSubject, batchUpload };
