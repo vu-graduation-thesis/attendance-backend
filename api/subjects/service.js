@@ -6,7 +6,9 @@ import fs from "fs";
 import csvParser from "csv-parser";
 
 const getAllSubjects = async () => {
-  const subjects = await SubjectModel.find({});
+  const subjects = await SubjectModel.find({
+    isDeleted: { $ne: true },
+  });
   logger.info(
     `Get all subjects successfully - ${
       subjects.length

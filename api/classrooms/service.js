@@ -5,7 +5,9 @@ import fs from "fs";
 import csvParser from "csv-parser";
 
 const getAllClassrooms = async () => {
-  const classrooms = await ClassroomModel.find({});
+  const classrooms = await ClassroomModel.find({
+    isDeleted: { $ne: true },
+  });
   logger.info(
     `Get all classrooms successfully - ${
       classrooms.length

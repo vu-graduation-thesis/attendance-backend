@@ -6,6 +6,10 @@ const classroomSchema = new mongoose.Schema(
     location: String,
     numberOfSeats: Number,
     type: String,
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "accounts",

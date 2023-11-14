@@ -4,6 +4,10 @@ const subjectSchema = new mongoose.Schema(
   {
     name: String,
     type: String,
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "accounts",

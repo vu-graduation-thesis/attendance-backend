@@ -30,7 +30,7 @@ const accountSchema = new mongoose.Schema(
     },
     admin: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "accounts",
+      ref: "admins",
     },
     student: {
       type: mongoose.Schema.Types.ObjectId,

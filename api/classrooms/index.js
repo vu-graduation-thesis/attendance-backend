@@ -2,7 +2,7 @@ import { Router } from "express";
 import { asyncRouteHandler } from "../../middlewares/asyncRouter.js";
 import controller from "./controller.js";
 import authMiddleware from "../../middlewares/auth.js";
-import { ADMIN_ROLE } from "../../utils/constant.js";
+import { ADMIN_ROLE, TEACHER_ROLE } from "../../utils/constant.js";
 import { localUpload } from "../../middlewares/fileUpload.js";
 
 const router = Router();
