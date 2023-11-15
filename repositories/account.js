@@ -12,7 +12,7 @@ const find = (filter) => {
     .populate("admin")
     .populate("student")
     .populate("teacher")
-    .sort({ updatedAt: -1 });
+    .sort({ createdAt: -1 });
 };
 
 export default { findOne, find };

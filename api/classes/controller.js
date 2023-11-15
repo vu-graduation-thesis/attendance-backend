@@ -33,9 +33,16 @@ const updateClass = async (req, res) => {
   });
 };
 
+const exportAttendance = async (req, res) => {
+  const { id } = req.params;
+  const data = await service.exportAttendance(id);
+  res.download(data.path, data.fileName);
+};
+
 export default {
   getAllClasses,
   addClass,
   updateClass,
   getClassById,
+  exportAttendance,
 };

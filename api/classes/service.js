@@ -3,6 +3,8 @@ import ClassModel from "../../database/class.js";
 import LessonModel from "../../database/lesson.js";
 import logger from "../../utils/logger.js";
 import LessonRepository from "../../repositories/lesson.js";
+import { createObjectCsvWriter } from "csv-writer";
+import fs from "fs";
 
 const getAllClasses = async (filter) => {
   logger.info(`Start get all classes with filter - ${JSON.stringify(filter)}`);
@@ -92,9 +94,64 @@ const updateClass = async (id, _class) => {
   return updatedClass;
 };
 
+const exportAttendance = async (id) => {
+  const _class = await ClassModel.findById(id)
+    .populate("teacher")
+    .populate("subject")
+    .populate("students")
+    .populate("createdBy")
+    .lean();
+
+  const lessons = await LessonModel.find({
+    class: _class._id,
+  }).lean();
+
+  const students = _class?.students?.map((student) => {
+    const attendanceCount = lessons?.reduce((count, lesson) => {
+      const attendance = lesson.attendances.some(
+        (attendance) =>
+          attendance?.student?.toHexString() === student?._id?.toHexString()
+      );
+      if (attendance) {
+        count++;
+      }
+      return count;
+    }, 0);
+
+    return {
+      ...student,
+      attendanceCount,
+    };
+  });
+
+  if (!fs.existsSync(`${__dirname}/exports`)) {
+    fs.mkdirSync(`${__dirname}/exports`);
+  }
+
+  const csvWriter = createObjectCsvWriter({
+    path: `${__dirname}/exports/${_class?.name}.csv`,
+    header: [
+      { id: "studentId", title: "Mã sinh viên" },
+      { id: "name", title: "Họ tên" },
+      { id: "birthday", title: "Ngày sinh" },
+      { id: "administrativeClass", title: "Lớp" },
+      { id: "email", title: "Email" },
+      { id: "verified", title: "Đã xác thực" },
+      { id: "attendanceCount", title: "Số buổi đi học" },
+    ],
+  });
+
+  await csvWriter?.writeRecords(students);
+  return {
+    path: `${__dirname}/exports/${_class?.name}.csv`,
+    filename: `${_class?.name}.csv`,
+  };
+};
+
 export default {
   getAllClasses,
   addClass,
   updateClass,
   getClassById,
+  exportAttendance,
 };

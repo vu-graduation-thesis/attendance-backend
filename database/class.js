@@ -9,6 +9,12 @@ const classSchema = new mongoose.Schema(
     numberOfCredits: Number,
     totalNumberOfLessons: Number,
     isActivate: Boolean,
+    lessonSchedules: [
+      {
+        startDay: String,
+        classroom: String,
+      },
+    ],
     isDeleted: {
       type: Boolean,
       default: false,

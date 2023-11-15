@@ -38,4 +38,6 @@ router.post(
   asyncRouteHandler(controller.batchUpload)
 );
 
+router.get("/:id/export", asyncRouteHandler(controller.exportAttendance));
+
 export default router;
