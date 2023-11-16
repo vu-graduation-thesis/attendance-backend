@@ -1,5 +1,6 @@
 import service from "./service.js";
 import studentService from "../students/service.js";
+import CustomException from "../../exceptions/customException.js";
 
 const recognize = async (req, res) => {
   const { lessonId, bucket, folder, file, user } = req;
@@ -22,6 +23,16 @@ const recognize = async (req, res) => {
   res.json(result);
 };
 
+const recognizeImageStudentUpload = async (req, res) => {
+  const { lessonId } = req;
+  const result = await service.checkLessonAttendanceValid(lessonId);
+  if (result) {
+    recognize(req, res);
+  } else {
+    throw new CustomException(400, "Lesson attendance is not valid");
+  }
+};
+
 const training = async (req, res) => {
   const { user, bucket, folder, files } = req;
   service.training({ studentId: user?.identity, bucket, folder, files });
@@ -36,4 +47,4 @@ const training = async (req, res) => {
   });
 };
 
-export { training, recognize };
+export { training, recognize, recognizeImageStudentUpload };

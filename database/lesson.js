@@ -29,6 +29,7 @@ const lessonSchema = new mongoose.Schema(
       folder: String,
     },
     order: Number,
+    endAttendanceSessionTime: Date,
   },
   {
     timestamps: true,

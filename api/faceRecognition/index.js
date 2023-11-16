@@ -25,6 +25,19 @@ router.post(
 );
 
 router.post(
+  "/recognize/:lessionId/student-upload-image",
+  authMiddleware(STUDENT_ROLE),
+  (req, res, next) => {
+    req.folder = req.params.lessonId;
+    req.bucket = "attendance-resource";
+    req.lessonId = req.params.lessonId;
+    next();
+  },
+  localUpload.single("file"),
+  asyncRouteHandler(controller.recognizeImageStudentUpload)
+);
+
+router.post(
   "/training",
   authMiddleware(STUDENT_ROLE),
   (req, res, next) => {

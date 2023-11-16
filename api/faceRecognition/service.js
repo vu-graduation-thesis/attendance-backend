@@ -271,4 +271,20 @@ const uploadFilesToS3 = async ({ files, bucket, folder }) => {
   }
 };
 
-export default { training, recognizeAndUpdateAttendance, uploadFilesToS3 };
+const checkLessonAttendanceValid = async (lessonId) => {
+  const lesson = await LessonModel.findOne({
+    _id: lessonId,
+    endAttendanceSessionTime: {
+      $gte: new Date(),
+    },
+  });
+
+  return !!lesson;
+};
+
+export default {
+  training,
+  recognizeAndUpdateAttendance,
+  uploadFilesToS3,
+  checkLessonAttendanceValid,
+};
