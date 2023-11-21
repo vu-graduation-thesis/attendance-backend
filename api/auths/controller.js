@@ -46,7 +46,7 @@ const changePassword = async (req, res) => {
 const getUserInfo = async (req, res) => {
   const result = await service.getUserInfo(req?.user?._id);
   res.json({
-    message: "Get all admins successfully",
+    message: "Get user info successfully",
     data: result,
   });
 };

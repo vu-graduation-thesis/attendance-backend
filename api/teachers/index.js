@@ -9,13 +9,13 @@ const router = Router();
 
 router.get(
   "/",
-  authMiddleware(ADMIN_ROLE),
+  authMiddleware(ADMIN_ROLE, TEACHER_ROLE),
   asyncRouteHandler(controller.getAllTeachers)
 );
 
 router.post(
   "/",
-  authMiddleware(ADMIN_ROLE),
+  authMiddleware(ADMIN_ROLE, TEACHER_ROLE),
   asyncRouteHandler(controller.addTeacher)
 );
 
