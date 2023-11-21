@@ -7,6 +7,7 @@ const bcryptCompare = (text, hash) => {
 };
 
 const bcryptHash = (text) => {
+  console.log(text);
   return bcrypt.hashSync(text, SALT_ROUNDS);
 };
 

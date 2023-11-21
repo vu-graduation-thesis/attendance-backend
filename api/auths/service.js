@@ -82,9 +82,10 @@ const changePassword = async (id, { oldPassword, newPassword }) => {
     logger.error(`Account with id ${id} not found`);
     throw new CustomException(400, "Account not found");
   }
-  if (!cryptUtil.bcryptCompare(oldPassword, account.password)) {
+  console.log(account);
+  if (!cryptUtil.bcryptCompare(oldPassword, account.password || "")) {
     logger.error(`Wrong old password for account with id ${id}`);
-    throw new CustomException(403, "Wrong old password");
+    throw new CustomException(403, "Wrong old password", WRONG_PASSWORD);
   }
   account.password = cryptUtil.bcryptHash(newPassword);
   await account.save();
