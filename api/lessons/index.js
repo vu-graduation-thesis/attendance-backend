@@ -24,4 +24,10 @@ router.put(
   asyncRouteHandler(controller.manualAttendance)
 );
 
+router.get(
+  "/:lessonId/check-attendance-session",
+  authMiddleware(),
+  asyncRouteHandler(controller.checkLessonAttendanceValid)
+);
+
 export default router;

@@ -24,10 +24,10 @@ const recognize = async (req, res) => {
 };
 
 const recognizeImageStudentUpload = async (req, res) => {
-  const { lessonId } = req;
+  const { lessonId } = req.params;
   const result = await service.checkLessonAttendanceValid(lessonId);
   if (result) {
-    recognize(req, res);
+    await recognize(req, res);
   } else {
     throw new CustomException(400, "Lesson attendance is not valid");
   }

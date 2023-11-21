@@ -28,10 +28,20 @@ const getAllAdmins = async () => {
 
 const addAdmin = async (admin) => {
   const existedAdmin = await AccountModel.findOne({
-    username: admin.username,
+    $or: [
+      {
+        username: admin?.username,
+      },
+      {
+        email: admin?.email,
+      },
+    ],
   });
   if (existedAdmin) {
-    throw new CustomException(400, "Username existed", EXISTED_ERROR_CODE);
+    throw new CustomException(400, "Username existed", EXISTED_ERROR_CODE, {
+      email: existedStudent?.email === payload.email,
+      username: existedStudent?.username === payload.username,
+    });
   }
   const newAdmin = await AdminModel.create({
     ...(admin.admin || {}),

@@ -25,7 +25,7 @@ router.post(
 );
 
 router.post(
-  "/recognize/:lessionId/student-upload-image",
+  "/recognize/:lessonId/student-upload-image",
   authMiddleware(STUDENT_ROLE),
   (req, res, next) => {
     req.folder = req.params.lessonId;

@@ -79,4 +79,20 @@ const manualAttendance = async ({ lessonId, studentId }) => {
   }
 };
 
-export default { getLessons, updateLesson, manualAttendance };
+const checkLessonAttendanceValid = async (lessonId) => {
+  const lesson = await LessonModel.findOne({
+    _id: lessonId,
+    endAttendanceSessionTime: {
+      $gte: new Date(),
+    },
+  });
+
+  return !!lesson;
+};
+
+export default {
+  getLessons,
+  updateLesson,
+  manualAttendance,
+  checkLessonAttendanceValid,
+};

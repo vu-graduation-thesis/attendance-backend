@@ -30,10 +30,20 @@ const getAllTeachers = async () => {
 
 const addTeacher = async (teacher, createdBy) => {
   const existedTeacher = await AccountModel.findOne({
-    username: teacher.username,
+    $or: [
+      {
+        username: teacher?.username,
+      },
+      {
+        email: teacher?.email,
+      },
+    ],
   });
   if (existedTeacher) {
-    throw new CustomException(400, "Username existed", EXISTED_ERROR_CODE);
+    throw new CustomException(400, "Username existed", EXISTED_ERROR_CODE, {
+      email: existedStudent?.email === payload.email,
+      username: existedStudent?.username === payload.username,
+    });
   }
   const newTeacher = await TeacherModel.create({
     ...(teacher.teacher || {}),

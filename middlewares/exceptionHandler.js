@@ -3,6 +3,7 @@ export default (err, req, res, next) => {
     error: {
       message: err.message || "Internal Server Error",
       code: err.code,
+      data: err.data,
     },
   });
 };

@@ -14,6 +14,8 @@ import CustomException from "../../exceptions/customException.js";
 import awsUtils from "../../utils/aws.js";
 import fs from "fs";
 import csvParser from "csv-parser";
+import mailUtils from "../../utils/mail/index.js";
+import config from "../../config.js";
 
 const getAllStudents = async () => {
   let students = await AccountRepository.find({
@@ -32,10 +34,20 @@ const getAllStudents = async () => {
 
 const addStudent = async (payload = {}, createdBy) => {
   const existedStudent = await AccountModel.findOne({
-    username: payload.username,
+    $or: [
+      {
+        username: payload.username,
+      },
+      {
+        email: payload.email,
+      },
+    ],
   });
   if (existedStudent) {
-    throw new CustomException(400, "Username existed", EXISTED_ERROR_CODE);
+    throw new CustomException(400, "Username existed", EXISTED_ERROR_CODE, {
+      email: existedStudent?.email === payload.email,
+      username: existedStudent?.username === payload.username,
+    });
   }
   const newStudent = await StudentModel.create({
     ...(payload?.student || {}),
@@ -44,7 +56,7 @@ const addStudent = async (payload = {}, createdBy) => {
 
   delete payload.student;
 
-  payload.password = common.getRandomInt(100000, 999999).toString();
+  payload.password = crypt.generateRandomPassword();
 
   await AccountModel.create({
     ...payload,
@@ -52,6 +64,14 @@ const addStudent = async (payload = {}, createdBy) => {
     student: newStudent._id,
     password: crypt.bcryptHash(payload.password),
   });
+
+  const subject = "Thông tin tài khoản sinh viên mới";
+  mailUtils.send("new_student_account", payload.email, subject, {
+    link: config.domain,
+    username: payload.username,
+    password: payload.password,
+  });
+
   logger.info(`Add student successfully - ${JSON.stringify(newStudent)}`);
 };
 

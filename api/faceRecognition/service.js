@@ -106,6 +106,7 @@ const recognizeAndUpdateAttendance = async ({
       output: recognizeResult?.output,
     };
   } catch (error) {
+    console.log("error", error);
     logger.error(
       `Recognize and update attendace for lesson ${lessonId} failed ${error}}`
     );
@@ -272,6 +273,7 @@ const uploadFilesToS3 = async ({ files, bucket, folder }) => {
 };
 
 const checkLessonAttendanceValid = async (lessonId) => {
+  console.log("checkLessonAttendanceValid", lessonId);
   const lesson = await LessonModel.findOne({
     _id: lessonId,
     endAttendanceSessionTime: {

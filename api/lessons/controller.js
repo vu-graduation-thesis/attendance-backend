@@ -1,4 +1,3 @@
-import { TEACHER_ROLE } from "../../utils/constant.js";
 import service from "./service.js";
 
 const getLessons = async (req, res) => {
@@ -34,4 +33,18 @@ const manualAttendance = async (req, res) => {
   });
 };
 
-export default { getLessons, updateLesson, manualAttendance };
+const checkLessonAttendanceValid = async (req, res) => {
+  const { lessonId } = req.params;
+  const isValid = await service.checkLessonAttendanceValid(lessonId);
+  res.json({
+    message: "Check lesson attendance valid successfully",
+    data: isValid,
+  });
+};
+
+export default {
+  getLessons,
+  updateLesson,
+  manualAttendance,
+  checkLessonAttendanceValid,
+};
