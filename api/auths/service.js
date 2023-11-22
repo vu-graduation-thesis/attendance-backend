@@ -14,7 +14,7 @@ import AccountModel from "../../database/account.js";
 
 const loginWithUsernamePassword = async (username, password) => {
   const account = await AccountRepository.findOne({
-    username,
+    username: { $regex: new RegExp(username, "i") },
   }).select("+password");
   if (!account) {
     logger.error(`Account with username ${username} not found`);
@@ -47,7 +47,7 @@ const loginWithGoogle = async (ggToken) => {
   const account =
     result &&
     (await AccountRepository.findOne({
-      email: result?.data?.email,
+      email: { $regex: new RegExp(result?.data?.email, "i") },
     }));
 
   if (!account) {
