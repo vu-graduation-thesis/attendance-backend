@@ -11,6 +11,9 @@ import logger from "./utils/logger.js";
 
 import { dirname } from "path";
 import { fileURLToPath } from "url";
+import fs from "fs";
+
+fs.mkdirSync("./uploads", { recursive: true });
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
