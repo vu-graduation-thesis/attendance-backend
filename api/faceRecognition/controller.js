@@ -1,6 +1,7 @@
 import service from "./service.js";
 import studentService from "../students/service.js";
 import CustomException from "../../exceptions/customException.js";
+import { EXPIRED_TIME_ERROR } from "../../utils/constant.js";
 
 const recognize = async (req, res) => {
   const { lessonId, bucket, folder, file, user } = req;
@@ -29,7 +30,11 @@ const recognizeImageStudentUpload = async (req, res) => {
   if (result) {
     await recognize(req, res);
   } else {
-    throw new CustomException(400, "Lesson attendance is not valid");
+    throw new CustomException(
+      400,
+      "Lesson attendance is not valid",
+      EXPIRED_TIME_ERROR
+    );
   }
 };
 

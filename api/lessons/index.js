@@ -6,11 +6,7 @@ import { ADMIN_ROLE, TEACHER_ROLE } from "../../utils/constant.js";
 
 const router = Router();
 
-router.get(
-  "/",
-  authMiddleware(ADMIN_ROLE, TEACHER_ROLE),
-  asyncRouteHandler(controller.getLessons)
-);
+router.get("/", authMiddleware(), asyncRouteHandler(controller.getLessons));
 
 router.put(
   "/:id",
