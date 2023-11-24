@@ -15,7 +15,7 @@ const sendMail = async ({ recipients = [], mailType }) => {
 
   recipients.forEach((recipient) => {
     mailUtil.send(mailType, recipient, subject, {
-      link: `${config.domain}/collect_face`,
+      link: `${config.domain}/collect-face`,
       email: recipient,
     });
   });
