@@ -41,38 +41,53 @@ const addStudent = async (payload = {}, createdBy) => {
       {
         email: payload.email,
       },
+      {
+        "student.studentId": payload.student?.studentId,
+      },
     ],
   });
   if (existedStudent) {
     throw new CustomException(400, "Username existed", EXISTED_ERROR_CODE, {
       email: existedStudent?.email === payload.email,
       username: existedStudent?.username === payload.username,
+      studentId:
+        existedStudent?.student?.studentId === payload.student?.studentId,
     });
   }
-  const newStudent = await StudentModel.create({
-    ...(payload?.student || {}),
-    createdBy: new mongoose.Types.ObjectId(createdBy),
-  });
 
-  delete payload.student;
+  try {
+    const newStudent = await StudentModel.create({
+      ...(payload?.student || {}),
+      createdBy: new mongoose.Types.ObjectId(createdBy),
+    });
 
-  payload.password = crypt.generateRandomPassword();
+    delete payload.student;
 
-  await AccountModel.create({
-    ...payload,
-    role: STUDENT_ROLE,
-    student: newStudent._id,
-    password: crypt.bcryptHash(payload.password),
-  });
+    payload.password = crypt.generateRandomPassword();
 
-  const subject = "Thông tin tài khoản sinh viên mới";
-  mailUtils.send("new_student_account", payload.email, subject, {
-    link: config.domain,
-    username: payload.username,
-    password: payload.password,
-  });
+    await AccountModel.create({
+      ...payload,
+      role: STUDENT_ROLE,
+      student: newStudent._id,
+      password: crypt.bcryptHash(payload.password),
+    });
 
-  logger.info(`Add student successfully - ${JSON.stringify(newStudent)}`);
+    const subject = "Thông tin tài khoản sinh viên mới";
+    mailUtils.send("new_student_account", payload.email, subject, {
+      link: config.domain,
+      username: payload.username,
+      password: payload.password,
+    });
+
+    logger.info(`Add student successfully - ${JSON.stringify(newStudent)}`);
+  } catch (err) {
+    if (err.code === 11000) {
+      throw new CustomException(400, "Student id existed", EXISTED_ERROR_CODE, {
+        studentId: true,
+      });
+    }
+    throw err;
+  }
 };
 
 const updateStudent = async (id, data = {}) => {
