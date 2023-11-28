@@ -62,4 +62,35 @@ async function uploadFilesToS3(files, bucketName, folderKey) {
   return Promise.allSettled(promises);
 }
 
-export default { getFileInFolder, getPublicUrl, uploadFilesToS3 };
+
+function getPublicUrlCloudFront(bucketName, objectKey, expires = 3600) {
+  const params = {
+    Bucket: bucketName,
+    Key: objectKey,
+    Expires: expires,
+  };
+
+  const cloudfront = new aws.CloudFront();
+  cloudfront.getDistributionConfig({
+    Id: 'E9VYUG6EWDDXI',
+  }, (err, data) => {
+    if (err) {
+      console.error('Error getting distribution config:', err);
+    } else {
+      const { DomainName } = data.DistributionConfig;
+      const distributionURL = `https://${DomainName}`;
+      console.log('CloudFront Distribution URL:', JSON.stringify(data, null, 2));
+    }
+  });
+  return new Promise((resolve, reject) => {
+    cloudfront.getSignedUrl("getObject", params, (error, url) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(url);
+      }
+    });
+  });
+}
+
+export default { getFileInFolder, getPublicUrl, uploadFilesToS3, getPublicUrlCloudFront };

@@ -13,6 +13,9 @@ import {
 } from "../../externalServices/faceRecognition.js";
 import AttendanceLogModel from "../../database/attendanceLog.js";
 import path from "path";
+import { getDistance } from 'geolib';
+import { DISTANCE_ERROR } from "../../utils/constant.js";
+
 
 const training = async ({ studentId, bucket, folder, files }) => {
   try {
@@ -80,8 +83,7 @@ const recognizeAndUpdateAttendance = async ({
     const recognizeResult = await requestRecognizeService(file.path);
 
     logger.info(
-      `Recognize and update attendace for lesson ${lessonId}, filename ${
-        file.key
+      `Recognize and update attendace for lesson ${lessonId}, filename ${file.key
       } successfully, response ${JSON.stringify(recognizeResult)}`
     );
 
@@ -284,9 +286,30 @@ const checkLessonAttendanceValid = async (lessonId) => {
   return !!lesson;
 };
 
+const checkDistance = async ({ lessonId, studentLocation }) => {
+  const lesson = await LessonModel.findOne({
+    _id: lessonId,
+    endAttendanceSessionTime: {
+      $gte: new Date(),
+    },
+  });
+
+  if (lesson?.location?.latitude && lesson?.location?.longitude) {
+    const distance = getDistance(
+      { latitude: lesson?.location?.latitude, longitude: lesson?.location?.longitude },
+      { latitude: studentLocation?.latitude, longitude: studentLocation?.longitude }
+    );
+    if (distance > 30) {
+      throw new CustomException(400, "You are too far from the classroom", DISTANCE_ERROR);
+    }
+  }
+  return true;
+};
+
 export default {
   training,
   recognizeAndUpdateAttendance,
   uploadFilesToS3,
   checkLessonAttendanceValid,
+  checkDistance
 };

@@ -30,6 +30,10 @@ const lessonSchema = new mongoose.Schema(
     },
     order: Number,
     endAttendanceSessionTime: Date,
+    location: {
+      longitude: Number,
+      latitude: Number,
+    }
   },
   {
     timestamps: true,

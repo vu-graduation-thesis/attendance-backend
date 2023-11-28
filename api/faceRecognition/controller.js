@@ -27,6 +27,15 @@ const recognize = async (req, res) => {
 const recognizeImageStudentUpload = async (req, res) => {
   const { lessonId } = req.params;
   const result = await service.checkLessonAttendanceValid(lessonId);
+  // get long lat in form data
+  await service.checkDistance({
+    lessonId,
+    location: {
+      latitude: req.body.latitude,
+      longitude: req.body.longitude,
+    },
+  });
+
   if (result) {
     await recognize(req, res);
   } else {
