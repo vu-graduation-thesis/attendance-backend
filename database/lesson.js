@@ -22,6 +22,7 @@ const lessonSchema = new mongoose.Schema(
           type: String,
           enum: ["AI_DETECTED", "MANUAL"],
         },
+        imageDetector: String,
       },
     ],
     resource: {

@@ -87,6 +87,19 @@ const recognizeAndUpdateAttendance = async ({
       } successfully, response ${JSON.stringify(recognizeResult)}`
     );
 
+    // download all faces image
+    const requestDownloadAllFaces = recognizeResult?.predict?.map((predict) => {
+      const localPath = `./uploads/${predict.imageDetector}`;
+      return downloadFile(
+        config.faceRecognitionServiceUrl +
+        `/api/download/${predict.imageDetector}`,
+        localPath
+      );
+    });
+
+    await Promise.allSettled(requestDownloadAllFaces);
+
+
     updateLessonAttendance({
       recognizeResult,
       lessonId,
@@ -145,6 +158,7 @@ const updateLessonAttendance = async ({
       students?.map((student) => ({
         student: student._id,
         type: "AI_DETECTED",
+        imageDetector: `./uploads/${recognizeResult?.predict?.find(x => x.label === student.studentId)?.imageDetector}`,
       })) || [];
 
     // Remove duplicate attendance
@@ -221,7 +235,7 @@ const updateAttendanceLog = async ({
   );
 };
 
-const downloadFile = async (url, path) => {
+const downloadFile = async (url, savePath) => {
   try {
     const response = await axios({
       method: "GET",
@@ -229,7 +243,7 @@ const downloadFile = async (url, path) => {
       responseType: "stream",
     });
 
-    const writeStream = fs.createWriteStream(path);
+    const writeStream = fs.createWriteStream(savePath);
     response.data.pipe(writeStream);
 
     return new Promise((resolve, reject) => {
