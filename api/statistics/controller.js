@@ -9,4 +9,12 @@ const statisticsClassAttendanceStatus = async (req, res) => {
   });
 };
 
-export default { statisticsClassAttendanceStatus };
+const statisticByAttendanceType = async (req, res) => {
+  const data = await service.statisticByAttendanceType();
+  res.json({
+    message: "Get statistic by attendance type successfully",
+    data,
+  });
+}
+
+export default { statisticsClassAttendanceStatus, statisticByAttendanceType };

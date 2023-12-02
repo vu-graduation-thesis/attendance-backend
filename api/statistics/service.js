@@ -1,3 +1,4 @@
+import LessonModel from "../../database/lesson.js";
 import classesService from "../classes/service.js";
 import lessonsService from "../lessons/service.js";
 
@@ -26,4 +27,50 @@ const statisticsClassAttendanceStatus = async ({ classId }) => {
   return data;
 };
 
-export default { statisticsClassAttendanceStatus };
+const statisticByAttendanceType = async () => {
+  const aiDetectedCount = await LessonModel.aggregate([
+    {
+      $unwind: "$attendances",
+
+    },
+    {
+      $match: {
+        "attendances.type": "AI_DETECTED"
+      }
+    },
+    {
+      $group: {
+        _id: "$attendances.type",
+        count: { $sum: 1 }
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        type: "$_id",
+        count: "$count"
+      }
+    }]);
+
+  const all = await LessonModel.aggregate([
+    {
+      $project: {
+        _id: 0,
+        count: { $size: "$attendances" }
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        count: { $sum: "$count" }
+      },
+    },
+  ]);
+
+  return {
+    aiDetectedCount: aiDetectedCount[0]?.count || 0,
+    all: all[0]?.count || 0
+  }
+}
+
+export default { statisticsClassAttendanceStatus, statisticByAttendanceType };
