@@ -17,6 +17,7 @@ const attendanceLogSchema = new mongoose.Schema(
               {
                 label: String,
                 confidence: Number,
+                imageDetector: String,
               },
             ],
             default: [],
