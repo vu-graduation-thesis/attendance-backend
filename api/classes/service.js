@@ -19,8 +19,7 @@ const getAllClasses = async (filter) => {
     .populate("students")
     .populate("createdBy");
   logger.info(
-    `Get all classes successfully with filer - ${JSON.stringify(filter)} - ${
-      classes.length
+    `Get all classes successfully with filer - ${JSON.stringify(filter)} - ${classes.length
     } classes - ${JSON.stringify(classes)}`
   );
   return classes;
@@ -84,11 +83,11 @@ const updateClass = async (id, _class) => {
     new: true,
   });
 
-  await LessonRepository.initLessonSchedule(
-    id,
-    _class.lessonSchedules,
-    _class.totalNumberOfLessons
-  );
+  // await LessonRepository.initLessonSchedule(
+  //   id,
+  //   _class.lessonSchedules,
+  //   _class.totalNumberOfLessons
+  // );
 
   logger.info(`Update class successfully - ${JSON.stringify(updatedClass)}`);
   return updatedClass;
