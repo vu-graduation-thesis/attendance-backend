@@ -13,9 +13,8 @@ import {
 } from "../../externalServices/faceRecognition.js";
 import AttendanceLogModel from "../../database/attendanceLog.js";
 import path from "path";
-import { getDistance } from 'geolib';
+import { getDistance } from "geolib";
 import { DISTANCE_ERROR } from "../../utils/constant.js";
-
 
 const training = async ({ studentId, bucket, folder, files }) => {
   try {
@@ -83,7 +82,8 @@ const recognizeAndUpdateAttendance = async ({
     const recognizeResult = await requestRecognizeService(file.path);
 
     logger.info(
-      `Recognize and update attendace for lesson ${lessonId}, filename ${file.key
+      `Recognize and update attendace for lesson ${lessonId}, filename ${
+        file.key
       } successfully, response ${JSON.stringify(recognizeResult)}`
     );
 
@@ -92,13 +92,12 @@ const recognizeAndUpdateAttendance = async ({
       const localPath = `./uploads/${predict.imageDetector}`;
       return downloadFile(
         config.faceRecognitionServiceUrl +
-        `/api/download/${predict.imageDetector}`,
+          `/api/download/${predict.imageDetector}`,
         localPath
       );
     });
 
     await Promise.allSettled(requestDownloadAllFaces);
-
 
     updateLessonAttendance({
       recognizeResult,
@@ -158,7 +157,10 @@ const updateLessonAttendance = async ({
       students?.map((student) => ({
         student: student._id,
         type: "AI_DETECTED",
-        imageDetector: `./uploads/${recognizeResult?.predict?.find(x => x.label === student.studentId)?.imageDetector}`,
+        imageDetector: `./uploads/${
+          recognizeResult?.predict?.find((x) => x.label === student.studentId)
+            ?.imageDetector
+        }`,
       })) || [];
 
     // Remove duplicate attendance
@@ -310,11 +312,22 @@ const checkDistance = async ({ lessonId, studentLocation }) => {
 
   if (lesson?.location?.latitude && lesson?.location?.longitude) {
     const distance = getDistance(
-      { latitude: lesson?.location?.latitude, longitude: lesson?.location?.longitude },
-      { latitude: studentLocation?.latitude, longitude: studentLocation?.longitude }
+      {
+        latitude: lesson?.location?.latitude,
+        longitude: lesson?.location?.longitude,
+      },
+      {
+        latitude: studentLocation?.latitude,
+        longitude: studentLocation?.longitude,
+      }
     );
+
     if (distance > 30) {
-      throw new CustomException(400, "You are too far from the classroom", DISTANCE_ERROR);
+      throw new CustomException(
+        400,
+        "You are too far from the classroom",
+        DISTANCE_ERROR
+      );
     }
   }
   return true;
@@ -325,5 +338,5 @@ export default {
   recognizeAndUpdateAttendance,
   uploadFilesToS3,
   checkLessonAttendanceValid,
-  checkDistance
+  checkDistance,
 };
