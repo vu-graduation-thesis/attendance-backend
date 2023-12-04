@@ -94,6 +94,7 @@ const addStudent = async (payload = {}, createdBy) => {
 };
 
 const updateStudent = async (id, data = {}) => {
+  console.log("sdjfalsdf", data, id);
   const account = await AccountRepository.findOne({ _id: id });
   if (!account) {
     throw new CustomException(400, "Student not found", NOT_FOUND_ERROR_CODE);
