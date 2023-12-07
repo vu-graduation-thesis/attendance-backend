@@ -18,15 +18,18 @@ import mailUtils from "../../utils/mail/index.js";
 import config from "../../config.js";
 
 const getAllStudents = async (filter) => {
-  let students = await AccountRepository.find({
-    role: STUDENT_ROLE,
-    isDeleted: {
-      $ne: true,
+  let students = await AccountRepository.find(
+    {
+      role: STUDENT_ROLE,
+      isDeleted: {
+        $ne: true,
+      },
     },
-
-  }, filter);
+    filter
+  );
   logger.info(
-    `Get all students successfully - ${students.length
+    `Get all students successfully - ${
+      students.length
     } students - ${JSON.stringify(students)}`
   );
   return students;
@@ -91,6 +94,7 @@ const addStudent = async (payload = {}, createdBy) => {
 };
 
 const updateStudent = async (id, data = {}) => {
+  console.log("sdjfalsdf", data, id);
   const account = await AccountRepository.findOne({ _id: id });
   if (!account) {
     throw new CustomException(400, "Student not found", NOT_FOUND_ERROR_CODE);

@@ -30,7 +30,7 @@ const recognizeImageStudentUpload = async (req, res) => {
   // get long lat in form data
   await service.checkDistance({
     lessonId,
-    location: {
+    studentLocation: {
       latitude: req.body.latitude,
       longitude: req.body.longitude,
     },
@@ -49,10 +49,11 @@ const recognizeImageStudentUpload = async (req, res) => {
 
 const training = async (req, res) => {
   const { user, bucket, folder, files } = req;
+
   service.training({ studentId: user?.identity, bucket, folder, files });
   studentService.updateStudent(user?._id, {
     student: {
-      avatar: files?.[0]?.key,
+      avatar: `${folder}/${files?.[0]?.originalname}`,
     },
   });
 
