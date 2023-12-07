@@ -5,6 +5,7 @@ import logger from "../../utils/logger.js";
 import LessonRepository from "../../repositories/lesson.js";
 import { createObjectCsvWriter } from "csv-writer";
 import fs from "fs";
+import { DateTime } from "luxon"
 
 const getAllClasses = async (filter) => {
   logger.info(`Start get all classes with filter - ${JSON.stringify(filter)}`);
@@ -119,6 +120,7 @@ const exportAttendance = async (id) => {
 
     return {
       ...student,
+      birthday: DateTime.fromJSDate(student?.birthday).toFormat("dd/MM/yyyy"),
       attendanceCount,
     };
   });
