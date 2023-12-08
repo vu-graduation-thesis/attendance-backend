@@ -7,10 +7,11 @@ import csvParser from "csv-parser";
 const getAllClassrooms = async () => {
   const classrooms = await ClassroomModel.find({
     isDeleted: { $ne: true },
+  }).sort({
+    createdAt: -1,
   });
   logger.info(
-    `Get all classrooms successfully - ${
-      classrooms.length
+    `Get all classrooms successfully - ${classrooms.length
     } classrooms - ${JSON.stringify(classrooms)}`
   );
   return classrooms;

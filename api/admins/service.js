@@ -39,8 +39,8 @@ const addAdmin = async (admin) => {
   });
   if (existedAdmin) {
     throw new CustomException(400, "Username existed", EXISTED_ERROR_CODE, {
-      email: existedStudent?.email === payload.email,
-      username: existedStudent?.username === payload.username,
+      email: existedAdmin?.email === admin.email,
+      username: existedAdmin?.username === admin.username,
     });
   }
   const newAdmin = await AdminModel.create({

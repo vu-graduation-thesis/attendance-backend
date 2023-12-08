@@ -8,10 +8,11 @@ import csvParser from "csv-parser";
 const getAllSubjects = async () => {
   const subjects = await SubjectModel.find({
     isDeleted: { $ne: true },
-  });
+  }).sort({
+    createdAt: -1,
+  });;
   logger.info(
-    `Get all subjects successfully - ${
-      subjects.length
+    `Get all subjects successfully - ${subjects.length
     } subjects - ${JSON.stringify(subjects)}`
   );
   return subjects;

@@ -11,7 +11,10 @@ const lessonSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "classrooms",
     },
-    session: Number,
+    session: {
+      type: Number,
+      default: 1,
+    },
     attendances: [
       {
         student: {

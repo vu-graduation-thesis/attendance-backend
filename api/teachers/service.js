@@ -21,8 +21,7 @@ const getAllTeachers = async () => {
     isDeleted: { $ne: true },
   });
   logger.info(
-    `Get all teachers successfully - ${
-      teachers.length
+    `Get all teachers successfully - ${teachers.length
     } teachers - ${JSON.stringify(teachers)}`
   );
   return teachers;
@@ -41,8 +40,8 @@ const addTeacher = async (teacher, createdBy) => {
   });
   if (existedTeacher) {
     throw new CustomException(400, "Username existed", EXISTED_ERROR_CODE, {
-      email: existedStudent?.email === payload.email,
-      username: existedStudent?.username === payload.username,
+      email: existedTeacher?.email === teacher.email,
+      username: existedTeacher?.username === teacher.username,
     });
   }
   const newTeacher = await TeacherModel.create({
